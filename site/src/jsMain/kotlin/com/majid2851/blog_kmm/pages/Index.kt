@@ -12,14 +12,8 @@ import com.majid2851.blog_kmm.worker.EchoWorker
 
 @Page
 @Composable
-fun HomePage() {
-    val worker = rememberWorker { EchoWorker { output -> console.log("Echoed: $output") } }
-    LaunchedEffect(Unit) {
-        worker.postInput("Hello, worker!")
-    }
+fun HomePage()
+{
 
-    // TODO: Replace the following with your own content
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("THIS PAGE INTENTIONALLY LEFT BLANK")
-    }
+
 }
