@@ -3,6 +3,7 @@ package com.majid2851.blog_kmm.api
 import com.majid2851.blog_kmm.data.MongoDB
 import com.majid2851.blog_kmm.models.User
 import com.majid2851.blog_kmm.models.UserWithoutPassword
+import com.majid2851.blog_kmm.util.ApiPath
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
@@ -12,7 +13,7 @@ import kotlinx.serialization.json.Json
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
-@Api(routeOverride = "usercheck")
+@Api(routeOverride = ApiPath.userCheck)
 suspend fun userCheck(context: ApiContext)
 {
     try {

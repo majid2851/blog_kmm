@@ -1,5 +1,6 @@
 package com.majid2851.blog_kmm.pages.styles
 
+import com.majid2851.blog_kmm.models.Theme
 import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
