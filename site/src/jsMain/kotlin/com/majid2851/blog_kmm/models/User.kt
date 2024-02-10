@@ -3,6 +3,7 @@ package com.majid2851.blog_kmm.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+
 @Serializable
 actual data class User(
     @SerialName(value="_id")
@@ -10,6 +11,7 @@ actual data class User(
     actual val userName:String="",
     actual val password:String="",
 )
+
 
 @Serializable
 actual data class UserWithoutPassword(

@@ -217,8 +217,4 @@ private fun rememberLoggedIn(
         localStorage["userId"]=user.id
         localStorage["userName"]=user.userName
     }
-
-
-
-
 }
