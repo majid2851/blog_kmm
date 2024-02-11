@@ -24,10 +24,6 @@ fun isUserLoggedIn(content:@Composable ()->Unit)
             else false
         if(remembered==false || userIdExist.value==false){
             context.router.navigateTo("/admin/login")
-        }else{
-            println("remembered ="+ remembered.toString())
-            println("userIdExist ="+userIdExist.toString())
-            println("userId ="+userId.toString())
         }
     }
 
