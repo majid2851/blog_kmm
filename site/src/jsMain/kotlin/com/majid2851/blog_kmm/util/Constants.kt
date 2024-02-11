@@ -24,8 +24,11 @@ object Id{
     const val passwordInput="passwordInput"
 
 }
-object Utils{
+object IdUtils{
     const val userId="userId"
     const val localStorage="remember"
     const val userName="userName"
+    const val svgParent="svgParent"
+    const val vectorIcon="vectorIcon"
+    const val navigationText="navigationText"
 }

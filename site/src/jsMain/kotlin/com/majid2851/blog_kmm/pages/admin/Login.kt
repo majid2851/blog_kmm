@@ -11,7 +11,7 @@ import com.majid2851.blog_kmm.pages.styles.LoginInputStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Id
 import com.majid2851.blog_kmm.util.Res
-import com.majid2851.blog_kmm.util.Utils
+import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.checkUserExistence
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -215,9 +215,9 @@ private fun rememberLoggedIn(
     user: UserWithoutPassword?=null
 )
 {
-    localStorage[Utils.localStorage] = remember.toString()
+    localStorage[IdUtils.localStorage] = remember.toString()
     if(user!=null){
-        localStorage[Utils.userId]=user.id
-        localStorage[Utils.userName]=user.userName
+        localStorage[IdUtils.userId]=user.id
+        localStorage[IdUtils.userName]=user.userName
     }
 }
