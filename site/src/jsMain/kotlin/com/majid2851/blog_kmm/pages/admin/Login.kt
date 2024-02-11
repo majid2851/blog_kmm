@@ -11,6 +11,7 @@ import com.majid2851.blog_kmm.pages.styles.LoginInputStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Id
 import com.majid2851.blog_kmm.util.Res
+import com.majid2851.blog_kmm.util.Utils
 import com.majid2851.blog_kmm.util.checkUserExistence
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -172,7 +173,8 @@ fun LoginScreen()
                                 if(user!=null)
                                 {
                                     rememberLoggedIn(remember = true,user=user)
-                                    context.router.navigateTo("admin/home")
+                                    context.router.
+                                        navigateTo("Index")
 
                                 }else{
                                     errorText.value="The user doesn't exist"
@@ -200,6 +202,7 @@ fun LoginScreen()
                 modifier=Modifier
                   .width(350.px)
                   .color(Colors.Red)
+                    .fontFamily(FONT_FAMILY)
                     .textAlign(TextAlign.Center),
                 text=errorText.value
             )
@@ -212,9 +215,9 @@ private fun rememberLoggedIn(
     user: UserWithoutPassword?=null
 )
 {
-    localStorage["remember"] = remember.toString()
+    localStorage[Utils.localStorage] = remember.toString()
     if(user!=null){
-        localStorage["userId"]=user.id
-        localStorage["userName"]=user.userName
+        localStorage[Utils.userId]=user.id
+        localStorage[Utils.userName]=user.userName
     }
 }

@@ -11,17 +11,18 @@ import org.litote.kmongo.coroutine.toList
 import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
-import java.lang.Exception
 
 
 //There was a very strange error here , if you want to run first call
 //initMongoDB() and then run MongoDB()
 @InitApi
-fun initMongoDB(context:InitApiContext,){
+fun initMongoDB(context:InitApiContext,)
+{
     System.setProperty(
         "org.litote.mongo.test.mapping.service",
         "org.litote.kmongo.serialization.SerializationClassMappingTypeService"
     )
+
     context.data.add(MongoDB(context))
 }
 
@@ -48,6 +49,20 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
             null
         }
 
+    }
+
+    override suspend fun checkUserId(id: String): Boolean {
+        return try {
+            val documentCount= userCollection
+                .countDocuments(User::id eq id)
+                .awaitFirst()
+            documentCount > 0
+
+        }catch (e:Exception){
+            context.logger.error(e.message.toString())
+            false
+
+        }
     }
 
 }
