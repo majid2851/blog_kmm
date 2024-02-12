@@ -10,8 +10,10 @@ import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.logout
 import com.varabyte.kobweb.compose.css.Cursor
+import com.varabyte.kobweb.compose.css.Overflow
 import com.varabyte.kobweb.compose.dom.svg.Path
 import com.varabyte.kobweb.compose.dom.svg.Svg
+import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
@@ -20,6 +22,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
@@ -36,12 +39,14 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.icons.fa.FaBars
+import com.varabyte.kobweb.silk.components.icons.fa.FaXmark
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
@@ -63,9 +68,7 @@ fun SidePanel(onMenuClick: () -> Unit)
 @Composable
 fun SidePanelInternal()
 {
-    val breakPoint= rememberBreakpoint();
-
-    val context= rememberPageContext()
+    val breakPoint= rememberBreakpoint()
     Column(
         modifier = Modifier
             .padding(leftRight = 40.px, topBottom = 50.px)
@@ -82,58 +85,12 @@ fun SidePanelInternal()
             description = "Logo Image"
         )
 
-        SpanText(
-            modifier = Modifier
-                .margin(bottom = 30.px)
-                .fontFamily(FONT_FAMILY)
-                .fontSize(14.px)
-                .color(Theme.HalfWhite.rgb),
-            text = "Dashboard"
-        )
-
-        NavigationItem(
-            title = "Home",
-            icon = Res.PathIcon.home,
-            onClick = {
-                context.router.navigateTo(Screen.AdminHome .route)
-            },
-            selected =context.route.path==(Screen.AdminHome.route)
-        )
-
-        NavigationItem(
-            title = "Create Post",
-            icon = Res.PathIcon.create,
-            onClick = {
-                context.router.navigateTo(Screen.AdminCreatePost.route)
-            },
-            selected = context.route.path==(Screen.AdminCreatePost.route)
-        )
-
-        NavigationItem(
-            modifier = Modifier.margin(bottom = 24.px),
-            title = "My Posts",
-            icon = Res.PathIcon.posts,
-            selected = context.route.path==(Screen.AdminMyPosts.route),
-            onClick = {
-                context.router.navigateTo(Screen.AdminMyPosts.route)
-            }
-        )
-
-
-        NavigationItem(
-            title = "Logout",
-            icon = Res.PathIcon.logout,
-            onClick = {
-                logout()
-                context.router.navigateTo(Screen.AdminLogin.route)
-            }
-        )
-
+        NavigationItems()
     }
 }
 
 @Composable
-fun NavigationItem(
+private fun NavigationItem(
     modifier: Modifier = Modifier,
     selected: Boolean = false,
     title: String,
@@ -177,7 +134,62 @@ fun NavigationItem(
 }
 
 @Composable
-fun VectorIcon(
+private fun NavigationItems()
+{
+    val context= rememberPageContext()
+    SpanText(
+        modifier = Modifier
+            .margin(bottom = 30.px)
+            .fontFamily(FONT_FAMILY)
+            .fontSize(14.px)
+            .color(Theme.HalfWhite.rgb),
+        text = "Dashboard"
+    )
+
+    NavigationItem(
+        title = "Home",
+        icon = Res.PathIcon.home,
+        onClick = {
+            context.router.navigateTo(Screen.AdminHome .route)
+        },
+        selected =context.route.path==(Screen.AdminHome.route)
+    )
+
+    NavigationItem(
+        title = "Create Post",
+        icon = Res.PathIcon.create,
+        onClick = {
+            context.router.navigateTo(Screen.AdminCreatePost.route)
+        },
+        selected = context.route.path==(Screen.AdminCreatePost.route)
+    )
+
+    NavigationItem(
+        modifier = Modifier.margin(bottom = 24.px),
+        title = "My Posts",
+        icon = Res.PathIcon.posts,
+        selected = context.route.path==(Screen.AdminMyPosts.route),
+        onClick = {
+            context.router.navigateTo(Screen.AdminMyPosts.route)
+        }
+    )
+
+
+    NavigationItem(
+        title = "Logout",
+        icon = Res.PathIcon.logout,
+        onClick = {
+            logout()
+            context.router.navigateTo(Screen.AdminLogin.route)
+        }
+    )
+
+}
+
+
+
+@Composable
+private fun VectorIcon(
     modifier:Modifier =Modifier,
     pathData: String,
     selected: Boolean,
@@ -242,10 +254,64 @@ fun CollapseSizePanel(
             description = "Logo Image"
         )
 
+    }
+}
+
+@Composable
+fun OverflowSidePanel(onMenuClose:()->Unit)
+{
+    val breakPoint= rememberBreakpoint()
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.vh)
+            .position(Position.Fixed)
+            .zIndex(9)
+            .backgroundColor(Theme.HalfBlack.rgb)
+
+    )
+    {
+        Column(
+            modifier = Modifier
+                .padding(all=24.px)
+                .fillMaxWidth()
+                .width(
+                    if(breakPoint < Breakpoint.MD)
+                        50.percent
+                    else 25.percent
+                )// smaller than desktop
+                .backgroundColor(Theme.Secondary.rgb)
+        ) {
+            Row(
+                modifier = Modifier.margin(bottom = 24.px),
+                verticalAlignment = Alignment.CenterVertically,
+            )
+            {
+                FaXmark(
+                    modifier = Modifier
+                        .margin(right=20.px)
+                        .color(Colors.White)
+                        .cursor(Cursor.Pointer)
+                        .onClick {
+                            onMenuClose()
+                        }
+                    ,
+                    size = IconSize.LG
+                )
+
+                Image(
+                    modifier = Modifier.width(80.px),
+                    src = Res.Image.logo,
+                    description = "Logo Image",
+                )
+            }
+
+            NavigationItems()
+
+
+
+        }
+
 
     }
-
-
-
-
 }
