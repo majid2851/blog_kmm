@@ -1,6 +1,10 @@
 package com.majid2851.blog_kmm.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.pages.styles.NavigationItemStyle
@@ -9,8 +13,10 @@ import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.logout
+import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.ScrollBehavior
 import com.varabyte.kobweb.compose.dom.svg.Path
 import com.varabyte.kobweb.compose.dom.svg.Svg
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -31,8 +37,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.opacity
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
+import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
+import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.modifiers.translateX
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.thenIf
@@ -46,7 +57,10 @@ import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.Position
+import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
@@ -261,13 +275,36 @@ fun CollapseSizePanel(
 @Composable
 fun OverflowSidePanel(onMenuClose:()->Unit)
 {
+    val scope= rememberCoroutineScope()
     val breakPoint= rememberBreakpoint()
+    val translateX= remember { mutableStateOf((100).percent) }
+    val opacity= remember{ mutableStateOf(0.percent) }
+
+    LaunchedEffect(key1=breakPoint)
+    {
+        translateX.value=0.percent
+        opacity.value=100.percent
+        if(breakPoint > Breakpoint.MD)
+        {
+            scope.launch {
+                translateX.value=(-100).percent
+                opacity.value=0.percent
+                delay(500)
+                onMenuClose()
+            }
+
+        }
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(100.vh)
             .position(Position.Fixed)
             .zIndex(9)
+            .opacity(opacity.value)
+            .transition(CSSTransition(property = "opacity",duration =300.ms))
             .backgroundColor(Theme.HalfBlack.rgb)
 
     )
@@ -281,6 +318,10 @@ fun OverflowSidePanel(onMenuClose:()->Unit)
                         50.percent
                     else 18.percent
                 )// smaller than desktop
+                .translateX(translateX.value)
+                .transition(CSSTransition(property = "opacity",duration =300.ms))
+                .overflow(Overflow.Auto)
+                .scrollBehavior(ScrollBehavior.Smooth)
                 .backgroundColor(Theme.Secondary.rgb)
         ) {
             Row(
@@ -294,7 +335,12 @@ fun OverflowSidePanel(onMenuClose:()->Unit)
                         .color(Colors.White)
                         .cursor(Cursor.Pointer)
                         .onClick {
-                            onMenuClose()
+                            scope.launch {
+                                translateX.value=(-100).percent
+                                opacity.value=0.percent
+                                delay(500)
+                                onMenuClose()
+                            }
                         }
                     ,
                     size = IconSize.LG
