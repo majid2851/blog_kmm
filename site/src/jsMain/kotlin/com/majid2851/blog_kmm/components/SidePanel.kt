@@ -22,6 +22,7 @@ import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
+import com.varabyte.kobweb.compose.ui.modifiers.fillMaxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
@@ -274,16 +275,16 @@ fun OverflowSidePanel(onMenuClose:()->Unit)
         Column(
             modifier = Modifier
                 .padding(all=24.px)
-                .fillMaxWidth()
+                .fillMaxHeight()
                 .width(
                     if(breakPoint < Breakpoint.MD)
                         50.percent
-                    else 25.percent
+                    else 18.percent
                 )// smaller than desktop
                 .backgroundColor(Theme.Secondary.rgb)
         ) {
             Row(
-                modifier = Modifier.margin(bottom = 24.px),
+                modifier = Modifier.margin(bottom = 60.px),
                 verticalAlignment = Alignment.CenterVertically,
             )
             {

@@ -46,9 +46,12 @@ fun HomePage()
                     overflowMenuOpened.value=true
                 }
             )
-//            OverflowSidePanel(onMenuClose = {
-//                overflowMenuOpened.value=false
-//            })
+            if(overflowMenuOpened.value){
+                OverflowSidePanel(onMenuClose = {
+                    overflowMenuOpened.value=false
+                })
+            }
+
         }
 
     }
