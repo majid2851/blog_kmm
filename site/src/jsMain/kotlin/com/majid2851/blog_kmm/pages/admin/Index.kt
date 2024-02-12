@@ -3,6 +3,7 @@ package com.majid2851.blog_kmm.pages.admin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.OverflowSidePanel
 import com.majid2851.blog_kmm.components.SidePanel
 import com.majid2851.blog_kmm.components.SidePanelInternal
@@ -30,30 +31,7 @@ fun HomeScreen()
 @Composable
 fun HomePage()
 {
-    val overflowMenuOpened = remember { mutableStateOf(false) }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .maxWidth(Constants.PAGE_WIDTH.px),
-            horizontalAlignment = Alignment.Start
-        ) {
-            SidePanel(
-                onMenuClick = {
-                    overflowMenuOpened.value=true
-                }
-            )
-            if(overflowMenuOpened.value){
-                OverflowSidePanel(onMenuClose = {
-                    overflowMenuOpened.value=false
-                })
-            }
+   AdminPageLayout {
 
-        }
-
-    }
-
+   }
 }

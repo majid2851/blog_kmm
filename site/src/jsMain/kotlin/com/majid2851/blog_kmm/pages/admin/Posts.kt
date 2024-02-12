@@ -1,6 +1,7 @@
 package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
+import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.SidePanel
 import com.majid2851.blog_kmm.components.SidePanelInternal
 import com.majid2851.blog_kmm.util.Constants
@@ -26,20 +27,7 @@ fun MyPosts()
 @Composable
 fun PostScreen()
 {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .maxWidth(Constants.PAGE_WIDTH.px),
-            horizontalAlignment = Alignment.Start
-        ) {
-            SidePanel(onMenuClick = {
-
-            })
-        }
+    AdminPageLayout {
 
     }
 }
