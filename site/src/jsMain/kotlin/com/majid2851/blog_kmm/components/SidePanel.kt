@@ -8,6 +8,7 @@ import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.IdUtils
+import com.majid2851.blog_kmm.util.logout
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.dom.svg.Path
 import com.varabyte.kobweb.compose.dom.svg.Svg
@@ -70,14 +71,18 @@ fun SidePanel()
         NavigationItem(
             title = "Home",
             icon = Res.PathIcon.home,
-            onClick = {},
+            onClick = {
+                context.router.navigateTo(Screen.AdminHome .route)
+            },
             selected =context.route.path==(Screen.AdminHome.route)
         )
 
         NavigationItem(
             title = "Create Post",
             icon = Res.PathIcon.create,
-            onClick = {},
+            onClick = {
+                context.router.navigateTo(Screen.AdminCreatePost.route)
+            },
             selected = context.route.path==(Screen.AdminCreatePost.route)
         )
 
@@ -86,14 +91,19 @@ fun SidePanel()
             title = "My Posts",
             icon = Res.PathIcon.posts,
             selected = context.route.path==(Screen.AdminMyPosts.route),
-            onClick = {}
+            onClick = {
+                context.router.navigateTo(Screen.AdminMyPosts.route)
+            }
         )
 
 
         NavigationItem(
             title = "Logout",
             icon = Res.PathIcon.logout,
-            onClick = {}
+            onClick = {
+                logout()
+                context.router.navigateTo(Screen.AdminLogin.route)
+            }
         )
 
     }

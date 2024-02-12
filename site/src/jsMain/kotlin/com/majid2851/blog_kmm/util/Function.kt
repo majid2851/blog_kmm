@@ -8,6 +8,7 @@ import com.majid2851.blog_kmm.navigation.Screen
 import com.varabyte.kobweb.core.rememberPageContext
 import kotlinx.browser.localStorage
 import org.w3c.dom.get
+import org.w3c.dom.set
 
 @Composable
 fun isUserLoggedIn(content:@Composable ()->Unit)
@@ -34,6 +35,11 @@ fun isUserLoggedIn(content:@Composable ()->Unit)
         println("Loading....")
     }
 
+}
 
-
+fun logout()
+{
+    localStorage[IdUtils.localStorage] = "false"
+    localStorage[IdUtils.userName] = ""
+    localStorage[IdUtils.userId] = ""
 }
