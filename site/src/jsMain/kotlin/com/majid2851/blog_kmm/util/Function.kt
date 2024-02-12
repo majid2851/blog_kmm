@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.majid2851.blog_kmm.navigation.Screen
 import com.varabyte.kobweb.core.rememberPageContext
 import kotlinx.browser.localStorage
 import org.w3c.dom.get
@@ -23,7 +24,7 @@ fun isUserLoggedIn(content:@Composable ()->Unit)
         userIdExist.value = if(!userId.isNullOrEmpty()) checkUserId(id = userId)
             else false
         if(remembered==false || userIdExist.value==false){
-            context.router.navigateTo("/admin/login")
+            context.router.navigateTo(Screen.AdminLogin.route)
         }
     }
 

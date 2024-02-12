@@ -2,6 +2,7 @@ package com.majid2851.blog_kmm.components
 
 import androidx.compose.runtime.Composable
 import com.majid2851.blog_kmm.models.Theme
+import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.pages.styles.NavigationItemStyle
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
@@ -29,6 +30,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
@@ -37,7 +39,9 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
 
 @Composable
-fun SidePanel() {
+fun SidePanel()
+{
+    val context= rememberPageContext()
     Column(
         modifier = Modifier
             .padding(leftRight = 40.px, topBottom = 50.px)
@@ -67,19 +71,21 @@ fun SidePanel() {
             title = "Home",
             icon = Res.PathIcon.home,
             onClick = {},
-            selected = true
+            selected =context.route.path==(Screen.AdminHome.route)
         )
 
         NavigationItem(
             title = "Create Post",
             icon = Res.PathIcon.create,
-            onClick = {}
+            onClick = {},
+            selected = context.route.path==(Screen.AdminCreatePost.route)
         )
 
         NavigationItem(
             modifier = Modifier.margin(bottom = 24.px),
             title = "My Posts",
-            icon = Res.PathIcon.posts   ,
+            icon = Res.PathIcon.posts,
+            selected = context.route.path==(Screen.AdminMyPosts.route),
             onClick = {}
         )
 
