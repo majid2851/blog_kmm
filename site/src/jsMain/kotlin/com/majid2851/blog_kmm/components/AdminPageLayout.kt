@@ -41,4 +41,6 @@ fun AdminPageLayout(content:@Composable ()->Unit)
 
     }
 
+    content()
+
 }
