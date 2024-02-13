@@ -31,16 +31,17 @@ fun AdminPageLayout(content:@Composable ()->Unit)
                     overflowMenuOpened.value=true
                 }
             )
+
             if(overflowMenuOpened.value){
                 OverflowSidePanel(onMenuClose = {
                     overflowMenuOpened.value=false
                 })
             }
 
+            content()
         }
 
     }
 
-    content()
 
 }
