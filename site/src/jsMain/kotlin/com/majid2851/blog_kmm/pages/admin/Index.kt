@@ -1,19 +1,24 @@
 package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
-import com.majid2851.blog_kmm.components.OverflowSidePanel
-import com.majid2851.blog_kmm.components.SidePanel
-import com.majid2851.blog_kmm.components.SidePanelInternal
-import com.majid2851.blog_kmm.models.Joke
+import com.majid2851.blog_kmm.models.RandomJoke
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
+import com.majid2851.blog_kmm.util.ApiAddress
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
+import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.isUserLoggedIn
+import com.varabyte.kobweb.browser.api
+import com.varabyte.kobweb.browser.http.http
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -26,7 +31,6 @@ import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.cursor
-import com.varabyte.kobweb.compose.ui.modifiers.fillMaxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
@@ -46,15 +50,22 @@ import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.icons.fa.FaPlus
 import com.varabyte.kobweb.silk.components.icons.fa.IconSize
-import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.browser.localStorage
+import kotlinx.browser.window
+import kotlinx.serialization.decodeFromString
+import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
+import org.w3c.dom.get
+import org.w3c.dom.set
+import kotlin.js.Date
 
 @Page
 @Composable
@@ -69,16 +80,72 @@ fun HomeScreen()
 @Composable
 fun HomePage()
 {
-   AdminPageLayout {
-       HomeContent(joke = Joke(id = 3, joke = "This is a funny joke..."))
+    var randomJoke:RandomJoke? by remember { mutableStateOf(null) }
+    val scope= rememberCoroutineScope()
+
+    LaunchedEffect(Unit)
+    {
+        val date= localStorage[IdUtils.date]
+        if(date!=null){
+            val difference=(Date.now()-date.toDouble())
+            val dayHasPassed = difference >= Constants.dayMiliSeconds
+            if(dayHasPassed){
+                scope.launch {
+                    try{
+                        val result= window.http.get(ApiAddress.HUMOR_API_URL)
+                            .decodeToString()
+                        randomJoke = Json.decodeFromString<RandomJoke>(result)
+                        localStorage[IdUtils.date] = Date.now().toString()
+                        localStorage[IdUtils.joke]=result
+
+
+                    }catch (e:Exception){
+                        println(e.message)
+                    }
+                }
+            }else{
+                try {
+                    randomJoke= localStorage[IdUtils.joke]?.let {
+                        Json.decodeFromString(it)
+                    }
+                    println(randomJoke.toString())
+                }catch (e:Exception){
+                    randomJoke = RandomJoke(
+                        id=-1,
+                        joke = "Unexpected Error.",
+                    )
+                    println(e.message)
+                }
+
+            }
+        }else{
+            scope.launch {
+                try{
+                    val result= window.http.get(ApiAddress.HUMOR_API_URL)
+                        .decodeToString()
+                    randomJoke = Json.decodeFromString<RandomJoke>(result)
+                    localStorage[IdUtils.date] = Date.now().toString()
+                    localStorage[IdUtils.joke]=result
+
+
+                }catch (e:Exception){
+                    println(e.message)
+                }
+            }
+        }
+    }
+
+    AdminPageLayout {
+       HomeContent(joke = randomJoke)
        AddButton()
    }
 }
 
 @Composable
-fun HomeContent(joke: Joke?)
+fun HomeContent(joke: RandomJoke?)
 {
     val breakpoint = rememberBreakpoint()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -103,7 +170,7 @@ fun HomeContent(joke: Joke?)
                             .margin(bottom = 50.px)
                         ,
                         src= Res.Image.laugh,
-                        description = "Laugh Image",
+                        description = joke.joke,
                     )
                 }
                 if(joke.joke.contains("Q:"))
@@ -141,7 +208,7 @@ fun HomeContent(joke: Joke?)
                             .fontFamily(FONT_FAMILY)
                             .fontSize(28.px)
                         ,
-                        text = joke.joke.split(":")[0]
+                        text = joke.joke
                     )
                 }
 

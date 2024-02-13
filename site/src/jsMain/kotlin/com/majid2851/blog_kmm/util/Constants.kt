@@ -5,9 +5,16 @@ object Constants {
     const val SIDE_PANEL_WIDTH=250
     const val PAGE_WIDTH=1920
     const val COLLAPSED_PANEL_HEIGHT= 100
+    const val dayMiliSeconds=24*60*60*1000
 
 }
 
+object ApiAddress
+{
+    const val HUMOR_API_URL="https://api.humorapi.com/jokes/random?" +
+            "api-key=e1a1ce961ccd4e92a9af2d72af2c6fbf&max-length=150"
+
+}
 object Res {
     object Image{
         const val logo="/logo.svg"
@@ -27,6 +34,8 @@ object Id{
 
 }
 object IdUtils{
+    const val date: String="date"
+    const val joke:String="joke"
     const val userId="userId"
     const val localStorage="remember"
     const val userName="userName"
