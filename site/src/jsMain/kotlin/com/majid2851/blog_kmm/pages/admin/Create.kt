@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.models.Category
+import com.majid2851.blog_kmm.models.EditorKey
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
@@ -45,6 +46,7 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
+import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
@@ -155,11 +157,105 @@ fun CreateScreen()
                     }
                 )
 
+                EditorControls(breakPoint=breakPoint)
+
+
 
             }
 
         }
     }
+}
+
+@Composable
+fun EditorControls(breakPoint: Breakpoint)
+{
+    Box(modifier = Modifier.fillMaxWidth())
+    {
+        SimpleGrid(numColumns(base = 1, sm = 2))
+        {
+            Row(
+                modifier = Modifier
+                    .backgroundColor(Theme.LightGray.rgb)
+                    .borderRadius(r=4.px)
+                    .height(54.px)
+            )
+            {
+                EditorKey.entries.forEach {
+                    EditorKeyView(key = it)
+                }
+            }
+
+            Box(contentAlignment = Alignment.CenterEnd)
+            {
+                Button(
+                    attrs = Modifier
+                        .height(54.px)
+                        .margin(topBottom=if (breakPoint < Breakpoint.SM) 10.px
+                            else 0.px
+                        )
+                        .padding(leftRight = 24.px)
+                        .borderRadius(r=4.px)
+                        .backgroundColor(Theme.LightGray.rgb)
+                        .color(Theme.DarkGray.rgb)
+                        .border(
+                            width =0.px,
+                            style = LineStyle.None,
+                            color =Colors.Transparent,
+                        )
+                        .outline(
+                            width =0.px,
+                            style = LineStyle.None,
+                            color =Colors.Transparent,
+                        )
+                        .onClick {  }
+                        .toAttrs()
+                )
+                {
+                    SpanText(
+                        modifier=Modifier
+                            .fontFamily(FONT_FAMILY)
+                            .fontWeight(FontWeight.Medium)
+                            .fontSize(14.px),
+
+                        text = "Preview"
+                    )
+
+                }
+            }
+
+
+
+
+
+        }
+
+
+    }
+
+}
+@Composable
+fun EditorKeyView(key:EditorKey)
+{
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(leftRight = 12.px)
+            .borderRadius(r=4.px)
+            .cursor(Cursor.Pointer)
+            .onClick {  },
+        contentAlignment = Alignment.Center,
+
+    )
+    {
+        Image(
+            src= key.icon,
+            description="${key.name} Icon"
+        )
+    }
+
+
+
 }
 
 @Composable
