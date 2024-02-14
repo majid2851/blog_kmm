@@ -8,6 +8,7 @@ import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.EditorKey
 import com.majid2851.blog_kmm.models.Theme
+import com.majid2851.blog_kmm.pages.styles.EditorKeyStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
 import com.majid2851.blog_kmm.util.isUserLoggedIn
@@ -41,6 +42,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
@@ -50,6 +52,7 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
@@ -191,6 +194,11 @@ fun EditorControls(breakPoint: Breakpoint)
                 Button(
                     attrs = Modifier
                         .height(54.px)
+                        .thenIf(
+                            condition =breakPoint <Breakpoint.SM,
+                            other = Modifier.fillMaxWidth()
+
+                        )
                         .margin(topBottom=if (breakPoint < Breakpoint.SM) 10.px
                             else 0.px
                         )
@@ -238,7 +246,8 @@ fun EditorControls(breakPoint: Breakpoint)
 fun EditorKeyView(key:EditorKey)
 {
     Box(
-        modifier = Modifier
+        modifier = EditorKeyStyle
+            .toModifier()
             .fillMaxHeight()
             .padding(leftRight = 12.px)
             .borderRadius(r=4.px)
