@@ -20,6 +20,11 @@ enum class Theme(
         hex="#FAFAFA",
         rgb= rgb(r=250,g=250,b=250)
     ),
+
+    DarkGray(
+        hex="#050505",
+        rgb= rgb(r=40,g=40,b=40)
+    ),
     HalfWhite(
         hex = "#FFFFFF",
         rgb= rgba(r = 255, g =255 , b =255,a=0.5 )
