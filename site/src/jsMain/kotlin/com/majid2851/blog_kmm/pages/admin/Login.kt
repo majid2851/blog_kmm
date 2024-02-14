@@ -13,6 +13,7 @@ import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.checkUserExistence
+import com.majid2851.blog_kmm.util.noBorder
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.TextAlign
@@ -144,16 +145,7 @@ fun LoginScreen()
                     .fontWeight(FontWeight.Medium)
                     .fontFamily(FONT_FAMILY)
                     .fontSize(14.px)
-                    .border(
-                        width = 0.px,
-                        style = LineStyle.None,
-                        color=Colors.Transparent
-                    )
-                    .outline(
-                        width = 0.px,
-                        style = LineStyle.None,
-                        color=Colors.Transparent
-                    )
+                    .noBorder()
                     .cursor(Cursor.Pointer)
                     .onClick()
                     {

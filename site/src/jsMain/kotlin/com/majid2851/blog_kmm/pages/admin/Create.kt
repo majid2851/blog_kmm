@@ -13,6 +13,7 @@ import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.isUserLoggedIn
+import com.majid2851.blog_kmm.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -29,7 +30,6 @@ import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
-import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -45,16 +45,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
-import com.varabyte.kobweb.compose.ui.modifiers.maxSize
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
-import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.resize
 import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
-import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
@@ -69,7 +66,6 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
 import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Button
@@ -99,7 +95,7 @@ fun CreateScreen()
     val mainSwitch= remember { mutableStateOf(false) }
     val sponsoredSwitch= remember { mutableStateOf(false) }
     val thumbnailInputDisabled= remember { mutableStateOf(true) }
-    val fileName= remember { mutableStateOf("") }
+    val thumbnailName= remember { mutableStateOf("") }
     val selectedCategory= remember { mutableStateOf(Category.Programming) }
     val editorVisibility= remember{ mutableStateOf(true) }
 
@@ -168,10 +164,10 @@ fun CreateScreen()
                 )
 
                 ThumbnailUploader(
-                    thumbnail =fileName.value ,
+                    thumbnail =thumbnailName.value ,
                     thumbnailInputDisabled = !thumbnailInputDisabled.value,
                     onThumbnailSelect = { name,file ->
-                        fileName.value=name
+                        thumbnailName.value=name
                     }
                 )
 
@@ -185,36 +181,37 @@ fun CreateScreen()
 
                 Editor(editorVisibility =  editorVisibility.value)
 
-                Button(
-                    attrs=Modifier
-                        .onClick {  }
-                        .fillMaxWidth()
-                        .height(54.px)
-                        .margin(top = 24.px)
-                        .backgroundColor(Theme.Primary.rgb)
-                        .color(Colors.White)
-                        .borderRadius(r=4.px)
-                        .border(
-                            width =0.px,
-                            style=LineStyle.None,
-                            color=Colors.Transparent
-                        )
-                        .outline(
-                            width =0.px,
-                            style=LineStyle.None,
-                            color=Colors.Transparent
-                        )
-                        .fontFamily(FONT_FAMILY)
-                        .fontSize(16.px)
-                        .toAttrs()
-                ) {
-                    SpanText("Create")
-                }
+                createButton(
+                    onClick = {
+
+                    }
+                )
 
 
             }
 
         }
+    }
+}
+
+@Composable
+private fun createButton(onClick: () -> Unit)
+{
+    Button(
+        attrs = Modifier
+            .onClick {onClick() }
+            .fillMaxWidth()
+            .height(54.px)
+            .margin(top = 24.px)
+            .backgroundColor(Theme.Primary.rgb)
+            .color(Colors.White)
+            .borderRadius(r = 4.px)
+            .noBorder()
+            .fontFamily(FONT_FAMILY)
+            .fontSize(16.px)
+            .toAttrs()
+    ) {
+        SpanText("Create")
     }
 }
 
@@ -264,16 +261,7 @@ fun EditorControls(
                            if(editorVisibility) Theme.DarkGray.rgb
                             else Colors.White
                         )
-                        .border(
-                            width =0.px,
-                            style = LineStyle.None,
-                            color =Colors.Transparent,
-                        )
-                        .outline(
-                            width =0.px,
-                            style = LineStyle.None,
-                            color =Colors.Transparent,
-                        )
+                        .noBorder()
                         .onClick {
                             onEditorVisibilityChange()
                         }
@@ -345,16 +333,7 @@ fun Editor(editorVisibility: Boolean)
                .fontSize(16.px)
                .backgroundColor(Theme.LightGray.rgb)
                .borderRadius(r=4.px)
-               .border(
-                   width = 0.px,
-                   style =  LineStyle.None,
-                   color = Colors.Transparent,
-               )
-               .outline(
-                   width = 0.px,
-                   style =  LineStyle.None,
-                   color = Colors.Transparent,
-               )
+               .noBorder()
                .visibility(
                    if(editorVisibility) Visibility.Visible
                    else Visibility.Hidden
@@ -375,16 +354,8 @@ fun Editor(editorVisibility: Boolean)
                .fontFamily(FONT_FAMILY)
                .fontSize(16.px)
                .backgroundColor(Theme.LightGray.rgb)
-               .borderRadius(r=4.px).border(
-                   width = 0.px,
-                   style =  LineStyle.None,
-                   color = Colors.Transparent,
-               )
-               .outline(
-                   width = 0.px,
-                   style =  LineStyle.None,
-                   color = Colors.Transparent,
-               )
+               .borderRadius(r=4.px)
+               .noBorder()
                .visibility(
                    if(editorVisibility)
                     Visibility.Hidden else Visibility.Visible
@@ -494,17 +465,7 @@ fun ThumbnailUploader(
                 .padding(leftRight = 20.px)
                 .backgroundColor(Theme.LightGray.rgb)
                 .borderRadius(r = 4.px)
-                .border(
-                    width = 0.px,
-                    style = LineStyle.None,
-                    color = Colors.Transparent,
-
-                )
-                .outline(
-                    width = 0.px,
-                    style = LineStyle.None,
-                    color = Colors.Transparent,
-                )
+                .noBorder()
                 .fontWeight(FontWeight.Medium)
                 .fontFamily(FONT_FAMILY)
                 .fontSize(16.px)
@@ -534,17 +495,7 @@ fun ThumbnailUploader(
                         Theme.LightGray.rgb
                     else Theme.Primary.rgb
                 )
-                .border(
-                    width = 0.px,
-                    style = LineStyle.None,
-                    color = Colors.Transparent,
-
-                    )
-                .outline(
-                    width = 0.px,
-                    style = LineStyle.None,
-                    color = Colors.Transparent,
-                )
+                .noBorder()
                 .color(if(!thumbnailInputDisabled)
                     Theme.DarkGray.rgb else Colors.White
                 )
@@ -579,16 +530,7 @@ private fun CustomInput(placeHolder:String,marginTop:Int=0)
             .margin(top = marginTop.px, bottom = 12.px)
             .backgroundColor(Theme.LightGray.rgb)
             .borderRadius(r = 4.px)
-            .border(
-                width = 0.px,
-                style = LineStyle.None,
-                color = Colors.Transparent
-            )
-            .outline(
-                width = 0.px,
-                style = LineStyle.None,
-                color = Colors.Transparent
-            )
+            .noBorder()
             .fontFamily(FONT_FAMILY)
             .fontSize(16.px)
             .toAttrs {
