@@ -5,21 +5,26 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import com.majid2851.blog_kmm.components.AdminPageLayout
+import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
 import com.majid2851.blog_kmm.util.isUserLoggedIn
+import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.attrsModifier
 import com.varabyte.kobweb.compose.ui.graphics.Colors
 import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
+import com.varabyte.kobweb.compose.ui.modifiers.classNames
 import com.varabyte.kobweb.compose.ui.modifiers.color
+import com.varabyte.kobweb.compose.ui.modifiers.cursor
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
@@ -27,6 +32,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.outline
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -43,7 +49,11 @@ import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
+import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Input
+import org.jetbrains.compose.web.dom.Li
+import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.Ul
 
 @Page
 @Composable
@@ -63,6 +73,7 @@ fun CreateScreen()
     val popularSwitch= remember { mutableStateOf(false) }
     val mainSwitch= remember { mutableStateOf(false) }
     val sponsoredSwitch= remember { mutableStateOf(false) }
+    val selectedCategory= remember { mutableStateOf(Category.Programming) }
 
     AdminPageLayout {
         Box(
@@ -114,10 +125,92 @@ fun CreateScreen()
                     placeHolder = "Subtitle"
                 )
 
+                CategoryDropDown(
+                    selectedCategory =selectedCategory.value,
+                    onCategorySelected = {
+                        selectedCategory.value=it
+                    }
+                )
+
+
             }
 
         }
     }
+}
+
+@Composable
+private fun CategoryDropDown(
+    selectedCategory: Category,
+    onCategorySelected:(Category) ->Unit,
+)
+{
+    Box(
+        modifier = Modifier
+            .margin(topBottom = 12.px)
+            .classNames("dropdown")
+            .fillMaxWidth()
+            .height(54.px)
+            .backgroundColor(Theme.LightGray.rgb)
+            .cursor(Cursor.Pointer)
+            .attrsModifier {
+                attr("data-bs-toggle","dropdown")
+            }
+    )
+    {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(leftRight = 20.px),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+
+        ){
+            SpanText(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fontSize(16.px)
+                    .fontFamily(FONT_FAMILY),
+                text = selectedCategory.name
+            )
+            Box(
+                modifier = Modifier
+                    .classNames("dropdown-toggle")
+
+            )
+
+        }
+
+        Ul(
+            attrs = Modifier
+                .fillMaxWidth()
+                .classNames("dropdown-menu")
+                .toAttrs()
+        ) {
+            Category.entries.forEach{ category->
+                Li{
+                    A(
+                        attrs=Modifier
+                            .classNames("dropdown-item")
+                            .color(Colors.Black)
+                            .fontFamily(FONT_FAMILY)
+                            .fontSize(16.px)
+                            .onClick { onCategorySelected(category) }
+                            .toAttrs()
+                    ){
+                        Text(
+                            value = category.name
+                        )
+                    }
+                }
+            }
+
+        }
+
+    }
+
+
+
 }
 
 @Composable
