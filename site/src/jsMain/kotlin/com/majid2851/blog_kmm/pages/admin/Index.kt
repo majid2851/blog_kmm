@@ -113,10 +113,8 @@ fun HomeContent(joke: RandomJoke?)
         contentAlignment = Alignment.Center
     )
     {
-
         if (joke!=null)
         {
-
             Column(
                 modifier = Modifier.fillMaxSize()
                     .padding(topBottom = 50.px),
