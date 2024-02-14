@@ -17,8 +17,8 @@ enum class Theme(
         rgb=rgb(r=0,g=16,b=25)
     ),
     LightGray(
-        hex="#FAFAFA",
-        rgb= rgb(r=250,g=250,b=250)
+        hex="#FBFAFA",
+        rgb= rgb(r=247,g=247,b=247)
     ),
 
     DarkGray(

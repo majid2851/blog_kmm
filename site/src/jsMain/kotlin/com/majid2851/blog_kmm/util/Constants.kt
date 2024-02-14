@@ -41,12 +41,9 @@ object Res {
     }
 }
 
-object Id{
+object IdUtils{
     const val userNameInput="userNameInput"
     const val passwordInput="passwordInput"
-
-}
-object IdUtils{
     const val date: String="date"
     const val joke:String="joke"
     const val userId="userId"
@@ -55,4 +52,7 @@ object IdUtils{
     const val svgParent="svgParent"
     const val vectorIcon="vectorIcon"
     const val navigationText="navigationText"
+    const val editor="editor"
+    const val editorPreview="editorPreview"
+
 }

@@ -11,10 +11,15 @@ import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.pages.styles.EditorKeyStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
+import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.Resize
+import com.varabyte.kobweb.compose.css.ScrollBehavior
+import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -37,11 +42,18 @@ import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
 import com.varabyte.kobweb.compose.ui.modifiers.height
+import com.varabyte.kobweb.compose.ui.modifiers.id
 import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
+import com.varabyte.kobweb.compose.ui.modifiers.maxSize
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.outline
+import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.resize
+import com.varabyte.kobweb.compose.ui.modifiers.scrollBehavior
+import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.modifiers.width
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -61,9 +73,11 @@ import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
 import org.jetbrains.compose.web.dom.Button
+import org.jetbrains.compose.web.dom.Div
 import org.jetbrains.compose.web.dom.Input
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
+import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 
 @Page
@@ -87,6 +101,7 @@ fun CreateScreen()
     val thumbnailInputDisabled= remember { mutableStateOf(true) }
     val fileName= remember { mutableStateOf("") }
     val selectedCategory= remember { mutableStateOf(Category.Programming) }
+    val editorVisibility= remember{ mutableStateOf(true) }
 
     AdminPageLayout {
         Box(
@@ -160,8 +175,41 @@ fun CreateScreen()
                     }
                 )
 
-                EditorControls(breakPoint=breakPoint)
+                EditorControls(
+                    breakPoint=breakPoint,
+                    editorVisibility=editorVisibility.value,
+                    onEditorVisibilityChange = {
+                        editorVisibility.value = !editorVisibility.value
+                    }
+                )
 
+                Editor(editorVisibility =  editorVisibility.value)
+
+                Button(
+                    attrs=Modifier
+                        .onClick {  }
+                        .fillMaxWidth()
+                        .height(54.px)
+                        .margin(top = 24.px)
+                        .backgroundColor(Theme.Primary.rgb)
+                        .color(Colors.White)
+                        .borderRadius(r=4.px)
+                        .border(
+                            width =0.px,
+                            style=LineStyle.None,
+                            color=Colors.Transparent
+                        )
+                        .outline(
+                            width =0.px,
+                            style=LineStyle.None,
+                            color=Colors.Transparent
+                        )
+                        .fontFamily(FONT_FAMILY)
+                        .fontSize(16.px)
+                        .toAttrs()
+                ) {
+                    SpanText("Create")
+                }
 
 
             }
@@ -171,7 +219,11 @@ fun CreateScreen()
 }
 
 @Composable
-fun EditorControls(breakPoint: Breakpoint)
+fun EditorControls(
+    breakPoint: Breakpoint,
+    editorVisibility: Boolean,
+    onEditorVisibilityChange: ()->Unit,
+)
 {
     Box(modifier = Modifier.fillMaxWidth())
     {
@@ -204,8 +256,14 @@ fun EditorControls(breakPoint: Breakpoint)
                         )
                         .padding(leftRight = 24.px)
                         .borderRadius(r=4.px)
-                        .backgroundColor(Theme.LightGray.rgb)
-                        .color(Theme.DarkGray.rgb)
+                        .backgroundColor(
+                            if(editorVisibility) Theme.LightGray.rgb
+                            else Theme.Primary.rgb
+                        )
+                        .color(
+                           if(editorVisibility) Theme.DarkGray.rgb
+                            else Colors.White
+                        )
                         .border(
                             width =0.px,
                             style = LineStyle.None,
@@ -216,7 +274,9 @@ fun EditorControls(breakPoint: Breakpoint)
                             style = LineStyle.None,
                             color =Colors.Transparent,
                         )
-                        .onClick {  }
+                        .onClick {
+                            onEditorVisibilityChange()
+                        }
                         .toAttrs()
                 )
                 {
@@ -264,6 +324,81 @@ fun EditorKeyView(key:EditorKey)
     }
 
 
+
+}
+
+@Composable
+fun Editor(editorVisibility: Boolean)
+{
+   Box(modifier = Modifier.fillMaxWidth())
+   {
+       TextArea(
+           attrs = Modifier
+               .id(IdUtils.editor)
+               .fillMaxWidth()
+               .height(400.px)
+               .resize(Resize.None)
+               .maxHeight(400.px)
+               .margin(top = 20.px)
+               .padding(all = 20.px)
+               .fontFamily(FONT_FAMILY)
+               .fontSize(16.px)
+               .backgroundColor(Theme.LightGray.rgb)
+               .borderRadius(r=4.px)
+               .border(
+                   width = 0.px,
+                   style =  LineStyle.None,
+                   color = Colors.Transparent,
+               )
+               .outline(
+                   width = 0.px,
+                   style =  LineStyle.None,
+                   color = Colors.Transparent,
+               )
+               .visibility(
+                   if(editorVisibility) Visibility.Visible
+                   else Visibility.Hidden
+               )
+               .toAttrs{
+                    attr("placeholder","Post Content")
+               }
+       )
+
+       Div(
+           attrs = Modifier
+               .id(IdUtils.editorPreview)
+               .fillMaxWidth()
+               .height(400.px)
+               .maxHeight(400.px)
+               .margin(top = 20.px)
+               .padding(all = 20.px)
+               .fontFamily(FONT_FAMILY)
+               .fontSize(16.px)
+               .backgroundColor(Theme.LightGray.rgb)
+               .borderRadius(r=4.px).border(
+                   width = 0.px,
+                   style =  LineStyle.None,
+                   color = Colors.Transparent,
+               )
+               .outline(
+                   width = 0.px,
+                   style =  LineStyle.None,
+                   color = Colors.Transparent,
+               )
+               .visibility(
+                   if(editorVisibility)
+                    Visibility.Hidden else Visibility.Visible
+               )
+               .overflow(Overflow.Auto)
+               .scrollBehavior(ScrollBehavior.Smooth)
+               .toAttrs()
+       )
+       {
+
+
+       }
+
+   }
 
 }
 
@@ -476,6 +611,7 @@ private fun SwitchRowItem(
             .fillMaxWidth()
             .margin(
                 right = if (breakPoint < Breakpoint.SM) 0.px else 24.px,
+                left =  if (breakPoint < Breakpoint.SM) 0.px else 24.px,
                 bottom = if (breakPoint < Breakpoint.SM) 12.px
                 else 0.px
             ),

@@ -10,7 +10,6 @@ import com.majid2851.blog_kmm.models.UserWithoutPassword
 import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.pages.styles.LoginInputStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
-import com.majid2851.blog_kmm.util.Id
 import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.checkUserExistence
@@ -94,7 +93,7 @@ fun LoginScreen()
             Input(
                 type = InputType.Text,
                 attrs =  LoginInputStyle.toModifier()
-                    .id(Id.userNameInput)
+                    .id(IdUtils.userNameInput)
                     .margin(bottom = 12.px)
                     .width(350.px)
                     .height(54.px)
@@ -115,7 +114,7 @@ fun LoginScreen()
             Input(
                 type = InputType.Password,
                 attrs =  LoginInputStyle.toModifier()
-                    .id(Id.passwordInput)
+                    .id(IdUtils.passwordInput)
                     .margin(bottom = 20.px)
                     .width(350.px)
                     .height(54.px)
@@ -159,9 +158,9 @@ fun LoginScreen()
                     .onClick()
                     {
                         scope.launch {
-                            val userName=(document.getElementById(Id.userNameInput)
+                            val userName=(document.getElementById(IdUtils.userNameInput)
                                     as HTMLInputElement).value
-                            val password=(document.getElementById(Id.passwordInput)
+                            val password=(document.getElementById(IdUtils.passwordInput)
                                     as HTMLInputElement).value
                             if (userName.isNotEmpty() && password.isNotEmpty())
                             {
