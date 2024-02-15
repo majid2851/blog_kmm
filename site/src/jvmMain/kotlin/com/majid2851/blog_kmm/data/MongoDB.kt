@@ -1,5 +1,6 @@
 package com.majid2851.blog_kmm.data
 
+import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.User
 import com.majid2851.blog_kmm.util.Constants.DATABASE_NAME
 import com.varabyte.kobweb.api.data.add
@@ -30,8 +31,17 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
 {
     private val client=KMongo.createClient()
     private val database=client.getDatabase(DATABASE_NAME)
-
     private val userCollection=database.getCollection<User>()
+    private val postCollection=database.getCollection<Post>()
+
+
+    override suspend fun addPost(post: Post): Boolean {
+       return postCollection.insertOne(post)
+           .awaitFirst()
+           .wasAcknowledged()
+
+
+    }
 
     override suspend fun checkUserExistence(user: User): User?
     {

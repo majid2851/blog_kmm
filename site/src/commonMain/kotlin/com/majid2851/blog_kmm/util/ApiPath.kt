@@ -4,4 +4,5 @@ object ApiPath
 {
     const val userCheck="usercheck"
     const val checkUserId="checkUserId"
+    const val addPost="addpost"
 }
