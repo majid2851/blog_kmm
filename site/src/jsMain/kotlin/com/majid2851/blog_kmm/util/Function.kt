@@ -50,54 +50,6 @@ fun isUserLoggedIn(content:@Composable ()->Unit)
 
 }
 
-suspend fun fetchRandomJoke(onCompleted:(RandomJoke) -> Unit)
-{
-    val date= localStorage[IdUtils.date]
-    if(date!=null){
-        val difference=(Date.now()-date.toDouble())
-        val dayHasPassed = difference >= Constants.dayMiliSeconds
-        if(dayHasPassed){
-                try{
-                    val result= window.http.get(ApiAddress.HUMOR_API_URL)
-                        .decodeToString()
-                    onCompleted(Json.decodeFromString<RandomJoke>(result))
-                    localStorage[IdUtils.date] = Date.now().toString()
-                    localStorage[IdUtils.joke]=result
-
-
-                }
-                catch (e:Exception)
-                {
-                    onCompleted(RandomJoke(id=-1, joke = e.message.toString(),))
-
-                    println(e.message)
-                }
-        }else{
-            try {
-                localStorage[IdUtils.joke]?.let {
-                    Json.decodeFromString<RandomJoke>(it)
-                }?.let{onCompleted(it)}
-            }catch (e:Exception){
-                onCompleted(RandomJoke(id=-1, joke = e.message.toString(),))
-                println(e.message)
-            }
-
-        }
-    }else{
-            try{
-                val result= window.http.get(ApiAddress.HUMOR_API_URL)
-                    .decodeToString()
-                onCompleted(Json.decodeFromString<RandomJoke>(result))
-                localStorage[IdUtils.date] = Date.now().toString()
-                localStorage[IdUtils.joke]=result
-
-
-            }catch (e:Exception){
-                onCompleted(RandomJoke(id=-1, joke = e.message.toString(),))
-                println(e.message)
-            }
-    }
-}
 
 fun logout()
 {

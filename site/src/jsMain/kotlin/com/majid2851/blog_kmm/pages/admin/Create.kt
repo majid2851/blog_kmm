@@ -76,6 +76,21 @@ import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 
+data class CreatePageUiEvent(
+    var id :String ="",
+    var title:String ="",
+    var subtitle:String="",
+    var thumbnail: String="",
+    var thumbnailName: String="",
+    var content:String="",
+    var category:Category=Category.Programming,
+    var thumbnailInputDisabled: Boolean=false,
+    var editorVisibility: Boolean=true,
+    var main:Boolean=false,
+    var popular:Boolean=false,
+    var sponsor:Boolean=false,
+)
+
 @Page
 @Composable
 fun Create()
@@ -91,13 +106,9 @@ fun CreateScreen()
 {
 
     val breakPoint= rememberBreakpoint()
-    val popularSwitch= remember { mutableStateOf(false) }
-    val mainSwitch= remember { mutableStateOf(false) }
-    val sponsoredSwitch= remember { mutableStateOf(false) }
-    val thumbnailInputDisabled= remember { mutableStateOf(true) }
-    val thumbnailName= remember { mutableStateOf("") }
-    val selectedCategory= remember { mutableStateOf(Category.Programming) }
-    val editorVisibility= remember{ mutableStateOf(true) }
+    val uiState= remember {
+        mutableStateOf(CreatePageUiEvent())
+    }
 
     AdminPageLayout {
         Box(
@@ -124,19 +135,28 @@ fun CreateScreen()
                     SwitchRowItem(
                         breakPoint=breakPoint,
                         title = "Popular",
-                        switchValue =popularSwitch
+                        switchValue =uiState.value.popular,
+                        onSwitchChange = {
+                            uiState.value=uiState.value.copy(popular = it)
+                        }
                     )
 
                     SwitchRowItem(
                         breakPoint=breakPoint,
                         title = "Main",
-                        switchValue = mainSwitch,
+                        switchValue = uiState.value.main,
+                        onSwitchChange = {
+                            uiState.value=uiState.value.copy(main = it)
+                        }
                     )
 
                     SwitchRowItem(
                         breakPoint=breakPoint,
                         title = "Sponsored",
-                        switchValue = sponsoredSwitch,
+                        switchValue = uiState.value.sponsor,
+                        onSwitchChange = {
+                            uiState.value=uiState.value.copy(sponsor = it)
+                        }
                     )
                 }
 
@@ -150,40 +170,49 @@ fun CreateScreen()
                 )
 
                 CategoryDropDown(
-                    selectedCategory =selectedCategory.value,
+                    selectedCategory =uiState.value.category,
                     onCategorySelected = {
-                        selectedCategory.value=it
+                        uiState.value=uiState.value.copy(category = it)
                     }
                 )
 
                 SwitchRowItem(
                     breakPoint=breakPoint,
                     title = "Past an Image URL instead",
-                    switchValue = thumbnailInputDisabled,
-                    switchSize = SwitchSize.MD
+                    switchValue =uiState.value.thumbnailInputDisabled,
+                    switchSize = SwitchSize.MD,
+                    onSwitchChange = {
+                        uiState.value=uiState.value.copy(
+                            thumbnailInputDisabled = it
+                        )
+                    }
                 )
 
                 ThumbnailUploader(
-                    thumbnail =thumbnailName.value ,
-                    thumbnailInputDisabled = !thumbnailInputDisabled.value,
+                    thumbnail =uiState.value.thumbnail ,
+                    thumbnailInputDisabled = !uiState.value.thumbnailInputDisabled,
                     onThumbnailSelect = { name,file ->
-                        thumbnailName.value=name
+                        uiState.value=uiState.value.copy(thumbnailName = name)
                     }
                 )
 
                 EditorControls(
                     breakPoint=breakPoint,
-                    editorVisibility=editorVisibility.value,
+                    editorVisibility=uiState.value.editorVisibility,
                     onEditorVisibilityChange = {
-                        editorVisibility.value = !editorVisibility.value
+                        uiState.value=uiState.value.copy(
+                            editorVisibility = !uiState.value.editorVisibility
+                        )
                     }
                 )
 
-                Editor(editorVisibility =  editorVisibility.value)
+                Editor(editorVisibility =  uiState.value.editorVisibility)
 
                 createButton(
                     onClick = {
-
+//                        if(
+//
+//                        )
                     }
                 )
 
@@ -544,8 +573,9 @@ private fun CustomInput(placeHolder:String,marginTop:Int=0)
 private fun SwitchRowItem(
     breakPoint: Breakpoint,
     title: String,
-    switchValue: MutableState<Boolean>,
-    switchSize:SwitchSize = SwitchSize.LG
+    switchValue:Boolean,
+    switchSize:SwitchSize = SwitchSize.LG,
+    onSwitchChange:(Boolean)->Unit
 )
 {
     Row(
@@ -564,9 +594,9 @@ private fun SwitchRowItem(
     {
         Switch(
             modifier = Modifier.margin(right = 8.px),
-            checked = switchValue.value,
+            checked = switchValue,
             onCheckedChange = {
-                switchValue.value=it
+                onSwitchChange(it)
             },
             size = switchSize
         )
