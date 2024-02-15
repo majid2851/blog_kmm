@@ -6,7 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
-import com.majid2851.blog_kmm.components.MessagePopup
+import com.majid2851.blog_kmm.components.LinkPopup
+import com.majid2851.blog_kmm.components.Popup
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.ControlStyle
 import com.majid2851.blog_kmm.models.EditorControl
@@ -108,6 +109,7 @@ data class CreatePageUiEvent(
     val sponsor:Boolean=false,
     val messagePopupVisibility:Boolean =false,
     val popupMessage:String="",
+    val linkPopup:Boolean=false,
 )
 
 @Page
@@ -230,6 +232,11 @@ fun CreateScreen()
                         uiState.value=uiState.value.copy(
                             editorVisibility = !uiState.value.editorVisibility
                         )
+                    },
+                    onLinkClick = {
+                        uiState.value=uiState.value.copy(
+                            linkPopup = true
+                        )
                     }
                 )
 
@@ -305,13 +312,34 @@ fun CreateScreen()
 
     if(uiState.value.messagePopupVisibility)
     {
-        MessagePopup(
+        Popup(
             message = uiState.value.popupMessage,
             onDialogDismiss = {
                 uiState.value=uiState.value.copy(messagePopupVisibility = false)
             }
         )
     }
+
+    if(uiState.value.linkPopup)
+    {
+        LinkPopup(
+            onDialogDismiss = {
+              uiState.value=uiState.value.copy(linkPopup = false)
+            },
+            onLinkAdded = {href,title->
+                applyStyle(
+                    ControlStyle.Link(
+                        selectedText = getSelectedText(),
+                        title=title,
+                        href = href
+                    )
+                )
+            },
+            message = ""
+
+        )
+    }
+
 
 }
 
@@ -360,6 +388,7 @@ private fun createButton(onClick: () -> Unit)
 fun EditorControls(
     breakPoint: Breakpoint,
     editorVisibility: Boolean,
+    onLinkClick:()->Unit,
     onEditorVisibilityChange: ()->Unit,
 )
 {
@@ -378,7 +407,12 @@ fun EditorControls(
                     EditorControlView(
                         key = it,
                         onClick = {
-                            applyControlStyle(editorControl = it)
+                            applyControlStyle(
+                                editorControl = it,
+                                onLinkClick={
+                                    onLinkClick()
+                                }
+                            )
                         }
                     )
                 }
@@ -431,6 +465,8 @@ fun EditorControls(
     }
 
 }
+
+
 @Composable
 fun EditorControlView(
     key:EditorControl,

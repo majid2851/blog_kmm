@@ -111,7 +111,7 @@ fun applyStyle(controlStyle: ControlStyle)
 }
 
 
-fun applyControlStyle(editorControl: EditorControl)
+fun applyControlStyle(editorControl: EditorControl, onLinkClick: () -> Unit)
 {
     when(editorControl)
     {
@@ -128,12 +128,9 @@ fun applyControlStyle(editorControl: EditorControl)
                     selectedText = getSelectedText()
                 )
             )}
-//        EditorControl.Link->{
-//            applyStyle(
-//                controlStyle = ControlStyle.Link(
-//                    selectedText = getSelectedText()
-//                )
-//            )}
+        EditorControl.Link->{
+            onLinkClick()
+        }
         EditorControl.Title->{
             applyStyle(
                 controlStyle = ControlStyle.Title(

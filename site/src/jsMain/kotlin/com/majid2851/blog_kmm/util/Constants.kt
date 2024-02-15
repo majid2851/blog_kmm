@@ -58,5 +58,7 @@ object IdUtils{
     const val navigationText="navigationText"
     const val editor="editor"
     const val editorPreview="editorPreview"
+    const val linkHrefInput="thumbnailInput"
+    const val linkTitleInput="thumbnailInput"
 
 }
