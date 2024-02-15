@@ -1,10 +1,12 @@
 package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
+import com.majid2851.blog_kmm.components.MessagePopup
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.EditorKey
 import com.majid2851.blog_kmm.models.Post
@@ -69,6 +71,8 @@ import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.px
@@ -96,6 +100,8 @@ data class CreatePageUiEvent(
     val main:Boolean=false,
     val popular:Boolean=false,
     val sponsor:Boolean=false,
+    val messagePopupVisibility:Boolean =false,
+    val popupMessage:String="",
 )
 
 @Page
@@ -262,12 +268,29 @@ fun CreateScreen()
                                 )
                                 if(result){
                                     println("Successful")
+                                    setPopubMessage(
+                                        scope = scope,
+                                        state=uiState,
+                                        title="Successful"
+                                    )
+
+                                }else{
+                                    setPopubMessage(
+                                        scope = scope,
+                                        state=uiState,
+                                        title="There is a Problem!"
+                                    )
                                 }
                             }
 
 
                         }else{
-                            println("Please fill out all fileds")
+                            setPopubMessage(
+                                scope=scope,
+                                state=uiState,
+                                title = "Please fill out all fileds"
+                            )
+
                         }
                     }
                 )
@@ -277,8 +300,37 @@ fun CreateScreen()
 
         }
     }
+
+    if(uiState.value.messagePopupVisibility)
+    {
+        MessagePopup(
+            message = uiState.value.popupMessage,
+            onDialogDismiss = {
+                uiState.value=uiState.value.copy(messagePopupVisibility = false)
+            }
+        )
+    }
+
 }
 
+private fun setPopubMessage(
+    scope: CoroutineScope,
+    state: MutableState<CreatePageUiEvent>,
+    title: String
+) {
+    scope.launch {
+        state.value = state.value.copy(
+            messagePopupVisibility = true,
+            popupMessage = title
+
+        )
+        delay(2000)
+        state.value = state.value.copy(
+            messagePopupVisibility = false,
+            popupMessage = ""
+        )
+    }
+}
 
 
 @Composable
