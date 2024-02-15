@@ -30,6 +30,7 @@ object Res {
         const val quote="/quote.svg"
         const val code="/code.svg"
         const val image="/image.svg"
+        const val checkmark="/checkmark.svg"
 
     }
 

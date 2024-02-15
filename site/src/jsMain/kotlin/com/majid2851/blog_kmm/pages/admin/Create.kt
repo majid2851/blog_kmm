@@ -11,6 +11,7 @@ import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.EditorKey
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.Theme
+import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.pages.styles.EditorKeyStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
@@ -60,6 +61,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.graphics.Image
@@ -119,6 +121,7 @@ fun CreateScreen()
 {
     val scope= rememberCoroutineScope()
     val breakPoint= rememberBreakpoint()
+    val context= rememberPageContext()
     val uiState= remember {
         mutableStateOf(CreatePageUiEvent())
     }
@@ -267,12 +270,7 @@ fun CreateScreen()
                                     )
                                 )
                                 if(result){
-                                    println("Successful")
-                                    setPopubMessage(
-                                        scope = scope,
-                                        state=uiState,
-                                        title="Successful"
-                                    )
+                                   context.router.navigateTo(Screen.AdminSuccess.route)
 
                                 }else{
                                     setPopubMessage(

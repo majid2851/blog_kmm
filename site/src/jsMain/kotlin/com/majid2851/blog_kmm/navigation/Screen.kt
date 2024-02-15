@@ -7,6 +7,7 @@ sealed class Screen(val route:String)
     object AdminCreatePost:Screen(route = "/admin/create")
     object AdminMyPosts:Screen(route = "/admin/posts")
     object AdminLogout:Screen(route = "/admin/logout")
+    object AdminSuccess:Screen(route = "/admin/success")
 
 
 
