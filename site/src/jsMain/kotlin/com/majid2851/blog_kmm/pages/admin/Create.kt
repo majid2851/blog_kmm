@@ -8,7 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.MessagePopup
 import com.majid2851.blog_kmm.models.Category
-import com.majid2851.blog_kmm.models.EditorKey
+import com.majid2851.blog_kmm.models.EditorControl
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
@@ -370,8 +370,8 @@ fun EditorControls(
                     .height(54.px)
             )
             {
-                EditorKey.entries.forEach {
-                    EditorKeyView(key = it)
+                EditorControl.entries.forEach {
+                    EditorControlView(key = it)
                 }
             }
 
@@ -428,7 +428,7 @@ fun EditorControls(
 
 }
 @Composable
-fun EditorKeyView(key:EditorKey)
+fun EditorControlView(key:EditorControl)
 {
     Box(
         modifier = EditorKeyStyle

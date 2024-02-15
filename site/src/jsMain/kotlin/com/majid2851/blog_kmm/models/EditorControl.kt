@@ -2,7 +2,7 @@ package com.majid2851.blog_kmm.models
 
 import com.majid2851.blog_kmm.util.Res
 
-enum class EditorKey(
+enum class EditorControl(
     val icon:String,
 
 )
