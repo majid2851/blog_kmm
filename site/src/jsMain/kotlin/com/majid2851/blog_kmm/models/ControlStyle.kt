@@ -1,4 +1,4 @@
-package com.majid2851.blog_kmm.models
+package com.majid2851.blog_kmm.models   
 
 sealed class ControlStyle(
     val style:String,

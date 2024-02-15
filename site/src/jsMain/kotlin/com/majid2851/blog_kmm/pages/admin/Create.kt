@@ -8,6 +8,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.MessagePopup
 import com.majid2851.blog_kmm.models.Category
+import com.majid2851.blog_kmm.models.ControlStyle
 import com.majid2851.blog_kmm.models.EditorControl
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.Theme
@@ -17,6 +18,9 @@ import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.addPost
+import com.majid2851.blog_kmm.util.applyControlStyle
+import com.majid2851.blog_kmm.util.applyStyle
+import com.majid2851.blog_kmm.util.getSelectedText
 import com.majid2851.blog_kmm.util.getValueBasedOnId
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
@@ -371,7 +375,12 @@ fun EditorControls(
             )
             {
                 EditorControl.entries.forEach {
-                    EditorControlView(key = it)
+                    EditorControlView(
+                        key = it,
+                        onClick = {
+                            applyControlStyle(editorControl = it)
+                        }
+                    )
                 }
             }
 
@@ -417,18 +426,16 @@ fun EditorControls(
                 }
             }
 
-
-
-
-
         }
-
 
     }
 
 }
 @Composable
-fun EditorControlView(key:EditorControl)
+fun EditorControlView(
+    key:EditorControl,
+    onClick:()->Unit,
+)
 {
     Box(
         modifier = EditorKeyStyle
@@ -437,7 +444,7 @@ fun EditorControlView(key:EditorControl)
             .padding(leftRight = 12.px)
             .borderRadius(r=4.px)
             .cursor(Cursor.Pointer)
-            .onClick {  },
+            .onClick { onClick() },
         contentAlignment = Alignment.Center,
 
     )
