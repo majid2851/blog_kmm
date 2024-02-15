@@ -1,17 +1,20 @@
 package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.EditorKey
+import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.pages.styles.EditorKeyStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
 import com.majid2851.blog_kmm.util.IdUtils
+import com.majid2851.blog_kmm.util.addPost
+import com.majid2851.blog_kmm.util.getValueBasedOnId
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
@@ -65,6 +68,8 @@ import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import kotlinx.browser.document
+import kotlinx.browser.localStorage
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.A
@@ -75,20 +80,22 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
+import org.w3c.dom.HTMLTextAreaElement
+import kotlin.js.Date
 
 data class CreatePageUiEvent(
-    var id :String ="",
-    var title:String ="",
-    var subtitle:String="",
-    var thumbnail: String="",
-    var thumbnailName: String="",
-    var content:String="",
-    var category:Category=Category.Programming,
-    var thumbnailInputDisabled: Boolean=false,
-    var editorVisibility: Boolean=true,
-    var main:Boolean=false,
-    var popular:Boolean=false,
-    var sponsor:Boolean=false,
+    val id :String ="",
+    val title:String ="",
+    val subtitle:String="",
+    val thumbnail: String="",
+    val thumbnailName: String="",
+    val content:String="",
+    val category:Category=Category.Programming,
+    val thumbnailInputDisabled: Boolean=false,
+    val editorVisibility: Boolean=true,
+    val main:Boolean=false,
+    val popular:Boolean=false,
+    val sponsor:Boolean=false,
 )
 
 @Page
@@ -104,7 +111,7 @@ fun Create()
 @Composable
 fun CreateScreen()
 {
-
+    val scope= rememberCoroutineScope()
     val breakPoint= rememberBreakpoint()
     val uiState= remember {
         mutableStateOf(CreatePageUiEvent())
@@ -162,11 +169,13 @@ fun CreateScreen()
 
                 CustomInput(
                     placeHolder = "Title",
-                    marginTop = 12
+                    marginTop = 12,
+                    inputId = IdUtils.titleInput
                 )
 
                 CustomInput(
-                    placeHolder = "Subtitle"
+                    placeHolder = "Subtitle",
+                    inputId = IdUtils.subtitleInput,
                 )
 
                 CategoryDropDown(
@@ -189,10 +198,15 @@ fun CreateScreen()
                 )
 
                 ThumbnailUploader(
-                    thumbnail =uiState.value.thumbnail ,
+                    thumbnailName =uiState.value.thumbnailName ,
                     thumbnailInputDisabled = !uiState.value.thumbnailInputDisabled,
                     onThumbnailSelect = { name,file ->
-                        uiState.value=uiState.value.copy(thumbnailName = name)
+//                        (document.getElementById(IdUtils.thumbnailInput)
+//                                as HTMLInputElement).value =name
+                        uiState.value=uiState.value.copy(
+                            thumbnail = file,
+                            thumbnailName = name
+                        )
                     }
                 )
 
@@ -210,9 +224,51 @@ fun CreateScreen()
 
                 createButton(
                     onClick = {
-//                        if(
-//
-//                        )
+
+                        uiState.value=uiState.value.copy(
+                            title =getValueBasedOnId(IdUtils.titleInput) ,
+                            subtitle = getValueBasedOnId(IdUtils.subtitleInput) ,
+                            content = (document.getElementById(IdUtils.editor)
+                                    as HTMLTextAreaElement).value,
+                        )
+                        if(uiState.value.thumbnailInputDisabled){
+                            uiState.value=uiState.value.copy(
+                                thumbnail = getValueBasedOnId(IdUtils.thumbnailInput)
+                            )
+                        }
+
+                        val value=uiState.value
+                        if(
+                            value.title.isNotEmpty() &&
+                            value.subtitle.isNotEmpty() &&
+                            value.thumbnail.isNotEmpty() &&
+                            value.content.isNotEmpty()
+                        ){
+                            scope.launch {
+                                val result= addPost(
+                                    Post(
+                                        author = localStorage.
+                                        getItem(IdUtils.userName).toString(),
+                                        title = value.title,
+                                        subtitle = value.subtitle,
+                                        date = Date.now().toLong(),
+                                        thumbnail = value.thumbnail,
+                                        content = value.content,
+                                        category = value.category.name,
+                                        popular = value.popular,
+                                        main = value.main,
+                                        sponsored = value.sponsor,
+                                    )
+                                )
+                                if(result){
+                                    println("Successful")
+                                }
+                            }
+
+
+                        }else{
+                            println("Please fill out all fileds")
+                        }
                     }
                 )
 
@@ -222,6 +278,8 @@ fun CreateScreen()
         }
     }
 }
+
+
 
 @Composable
 private fun createButton(onClick: () -> Unit)
@@ -476,7 +534,7 @@ private fun CategoryDropDown(
 
 @Composable
 fun ThumbnailUploader(
-    thumbnail:String,
+    thumbnailName:String,
     thumbnailInputDisabled:Boolean,
     onThumbnailSelect:(String,String) ->Unit
 )
@@ -490,6 +548,7 @@ fun ThumbnailUploader(
         Input(
             type = InputType.Text,
             attrs =Modifier
+                .id(IdUtils.thumbnailInput)
                 .fillMaxSize()
                 .padding(leftRight = 20.px)
                 .backgroundColor(Theme.LightGray.rgb)
@@ -504,7 +563,7 @@ fun ThumbnailUploader(
                 )
                 .toAttrs{
                     attr("placeholder","Thumbnail")
-                    attr("value",thumbnail)
+                    attr("value",thumbnailName)
                 }
         )
         Button(
@@ -549,11 +608,16 @@ fun ThumbnailUploader(
 }
 
 @Composable
-private fun CustomInput(placeHolder:String,marginTop:Int=0)
+private fun CustomInput(
+    placeHolder:String,
+    marginTop:Int=0,
+    inputId:String,
+)
 {
     Input(
         type = InputType.Text,
         attrs = Modifier
+            .id(inputId)
             .fillMaxWidth()
             .height(54.px)
             .margin(top = marginTop.px, bottom = 12.px)

@@ -42,6 +42,9 @@ object Res {
 }
 
 object IdUtils{
+    const val thumbnailInput="thumbnailInput"
+    const val titleInput="titleInput"
+    const val subtitleInput="subtitleInput"
     const val userNameInput="userNameInput"
     const val passwordInput="passwordInput"
     const val date: String="date"
