@@ -43,6 +43,7 @@ object Res {
 }
 
 object IdUtils{
+    const val adminSearchBar="adminSearchBar"
     const val thumbnailInput="thumbnailInput"
     const val titleInput="titleInput"
     const val subtitleInput="subtitleInput"
