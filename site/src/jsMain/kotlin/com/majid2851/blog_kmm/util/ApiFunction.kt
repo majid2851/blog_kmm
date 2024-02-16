@@ -1,5 +1,6 @@
 package com.majid2851.blog_kmm.util
 
+import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.RandomJoke
 import com.majid2851.blog_kmm.models.User
@@ -116,6 +117,30 @@ suspend fun addPost(post:Post):Boolean
     }
 }
 
+suspend fun fetchMyPosts(
+    skip:Int,
+    onSuccess:(ApiListResponse) ->Unit,
+    onError:(Exception) ->Unit,
+)
+{
+    try{
+        try {
+            val result= window.api.tryGet(
+                apiPath = ApiPath.readMyPosts+"?"+"skip=$skip&author" +
+                        "=${localStorage.getItem(IdUtils.userName)}"
+            )?.decodeToString()
+            onSuccess(Json.decodeFromString(result.toString()))
+
+        } catch (e: Exception) {
+            onError(e)
+        }
+
+
+    }catch (e:Exception){
+
+    }
+
+}
 
 
 

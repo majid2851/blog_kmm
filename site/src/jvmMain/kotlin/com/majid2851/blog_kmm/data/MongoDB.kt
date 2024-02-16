@@ -1,7 +1,9 @@
 package com.majid2851.blog_kmm.data
 
 import com.majid2851.blog_kmm.models.Post
+import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.User
+import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.DATABASE_NAME
 import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
@@ -9,6 +11,7 @@ import com.varabyte.kobweb.api.init.InitApiContext
 import kotlinx.coroutines.reactive.awaitFirst
 import org.litote.kmongo.and
 import org.litote.kmongo.coroutine.toList
+import org.litote.kmongo.descending
 import org.litote.kmongo.eq
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
@@ -73,6 +76,20 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
             false
 
         }
+    }
+
+    override suspend fun readMyPost(skip: Int, author: String):
+            List<PostWithoutDetails>
+    {
+        return postCollection
+            //withDocumentClass allows us to get
+            // List<PostWithoutDetails> data from List<Post>
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::author eq author)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(Constants.POST_PER_PAGE)
+            .toList()
     }
 
 }
