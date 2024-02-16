@@ -48,6 +48,10 @@ enum class Theme(
     Purple(
         hex = "#8B6DFF",
         rgb = rgb(r=139,g=109,b=255)
+    ),
+    Red(
+        hex="#FF0000",
+        rgb=rgb(r=255,g=0,b=0)
     )
 
 

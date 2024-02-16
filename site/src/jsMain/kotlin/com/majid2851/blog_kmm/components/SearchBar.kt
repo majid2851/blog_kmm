@@ -19,6 +19,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.id
+import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onFocusIn
 import com.varabyte.kobweb.compose.ui.modifiers.onFocusOut
 import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
@@ -52,7 +53,7 @@ fun SearchBar(
             .border(
                 width = 2.px,
                 style = LineStyle.Solid,
-                color = if(focused.value==true) Theme.Primary.rgb
+                color = if(focused.value) Theme.Primary.rgb
                     else Theme.LightGray.rgb
             )
             .transition(CSSTransition(property = "border", duration = 200.ms)),
@@ -60,7 +61,9 @@ fun SearchBar(
     ){
         FaMagnifyingGlass(
             modifier=Modifier
-                .color(Theme.LightGray.rgb),
+                .color(if(focused.value) Theme.Primary.rgb else
+                    Theme.DarkGray.rgb
+                ),
             size = IconSize.SM,
         )
 
@@ -68,6 +71,7 @@ fun SearchBar(
             type = InputType.Text,
             attrs = Modifier
                 .id(IdUtils.adminSearchBar)
+                .margin(left = 12.px)
                 .fillMaxSize()
                 .color(Colors.Black)
                 .backgroundColor(Colors.Transparent)
