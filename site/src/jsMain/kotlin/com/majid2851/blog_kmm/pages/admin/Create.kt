@@ -21,6 +21,7 @@ import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.addPost
 import com.majid2851.blog_kmm.util.applyControlStyle
 import com.majid2851.blog_kmm.util.applyStyle
+import com.majid2851.blog_kmm.util.getEditor
 import com.majid2851.blog_kmm.util.getSelectedText
 import com.majid2851.blog_kmm.util.getValueBasedOnId
 import com.majid2851.blog_kmm.util.isUserLoggedIn
@@ -58,6 +59,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.maxHeight
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
+import com.varabyte.kobweb.compose.ui.modifiers.onKeyDown
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.resize
@@ -93,6 +95,7 @@ import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
 import org.khronos.webgl.Uint16Array
 import org.w3c.dom.HTMLTextAreaElement
+import org.w3c.dom.events.KeyboardEvent
 import kotlin.js.Date
 
 data class CreatePageUiEvent(
@@ -472,7 +475,8 @@ fun EditorControls(
                         .noBorder()
                         .onClick {
                             onEditorVisibilityChange()
-
+                            document.getElementById(IdUtils.editorPreview)
+                                ?.innerHTML = getEditor().value
                             //js library to highlight the code
                             js("hljs.highlightAll()") as Unit
 
@@ -546,6 +550,13 @@ fun Editor(editorVisibility: Boolean)
                .backgroundColor(Theme.LightGray.rgb)
                .borderRadius(r=4.px)
                .noBorder()
+               .onKeyDown {
+                   if(it.code=="Enter" && it.shiftKey){
+                       applyStyle(controlStyle = ControlStyle.Break(
+                           getSelectedText()
+                       ))
+                   }
+               }
                .visibility(
                    if(editorVisibility) Visibility.Visible
                    else Visibility.Hidden

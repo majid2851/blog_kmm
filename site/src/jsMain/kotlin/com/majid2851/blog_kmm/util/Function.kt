@@ -124,8 +124,7 @@ fun applyControlStyle(
                 controlStyle = ControlStyle.Bold(
                     selectedText = getSelectedText()
                 )
-            )
-        }
+            )}
         EditorControl.Italic->{
             applyStyle(
                 controlStyle = ControlStyle.Italic(
