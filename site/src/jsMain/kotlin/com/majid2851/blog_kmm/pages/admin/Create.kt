@@ -91,6 +91,7 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
+import org.khronos.webgl.Uint16Array
 import org.w3c.dom.HTMLTextAreaElement
 import kotlin.js.Date
 
@@ -110,6 +111,7 @@ data class CreatePageUiEvent(
     val messagePopupVisibility:Boolean =false,
     val popupMessage:String="",
     val linkPopup:Boolean=false,
+    val imgPopup:Boolean=false,
 )
 
 @Page
@@ -237,6 +239,11 @@ fun CreateScreen()
                         uiState.value=uiState.value.copy(
                             linkPopup = true
                         )
+                    },
+                    onImageClick = {
+                        uiState.value=uiState.value.copy(
+                            imgPopup = true
+                        )
                     }
                 )
 
@@ -326,7 +333,7 @@ fun CreateScreen()
             onDialogDismiss = {
               uiState.value=uiState.value.copy(linkPopup = false)
             },
-            onLinkAdded = {href,title->
+            onAddClick = { href, title->
                 applyStyle(
                     ControlStyle.Link(
                         selectedText = getSelectedText(),
@@ -335,11 +342,28 @@ fun CreateScreen()
                     )
                 )
             },
-            message = ""
-
+            editorControl = EditorControl.Link
         )
     }
 
+    if(uiState.value.imgPopup)
+    {
+        LinkPopup(
+            editorControl = EditorControl.Image,
+            onDialogDismiss = {
+                uiState.value=uiState.value.copy(imgPopup = false)
+            },
+            onAddClick = { imgUrl, description->
+                applyStyle(
+                    ControlStyle.Image(
+                        selectedText = getSelectedText(),
+                        alt=description,
+                        imageUrl= imgUrl
+                    )
+                )
+            },
+        )
+    }
 
 }
 
@@ -389,6 +413,7 @@ fun EditorControls(
     breakPoint: Breakpoint,
     editorVisibility: Boolean,
     onLinkClick:()->Unit,
+    onImageClick:()->Unit,
     onEditorVisibilityChange: ()->Unit,
 )
 {
@@ -411,6 +436,9 @@ fun EditorControls(
                                 editorControl = it,
                                 onLinkClick={
                                     onLinkClick()
+                                },
+                                onImgClick = {
+                                    onImageClick()
                                 }
                             )
                         }
@@ -444,6 +472,10 @@ fun EditorControls(
                         .noBorder()
                         .onClick {
                             onEditorVisibilityChange()
+
+                            //js library to highlight the code
+                            js("hljs.highlightAll()") as Unit
+
                         }
                         .toAttrs()
                 )

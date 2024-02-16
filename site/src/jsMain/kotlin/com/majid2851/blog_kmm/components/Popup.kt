@@ -1,6 +1,7 @@
 package com.majid2851.blog_kmm.components
 
 import androidx.compose.runtime.Composable
+import com.majid2851.blog_kmm.models.EditorControl
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.IdUtils
@@ -31,7 +32,6 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import kotlinx.browser.document
 import org.jetbrains.compose.web.attributes.InputType
-import org.jetbrains.compose.web.css.Color
 import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.css.vh
@@ -39,7 +39,6 @@ import org.jetbrains.compose.web.css.vw
 import org.jetbrains.compose.web.dom.Button
 import org.jetbrains.compose.web.dom.Input
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.get
 
 @Composable
 fun Popup(
@@ -81,8 +80,8 @@ fun Popup(
 
 @Composable
 fun LinkPopup(
-    message: String,
-    onLinkAdded: (String,String) -> Unit,
+    editorControl:EditorControl,
+    onAddClick: (String, String) -> Unit,
     onDialogDismiss:()->Unit
 ) {
     Box(
@@ -120,7 +119,10 @@ fun LinkPopup(
                      .noBorder()
                      .backgroundColor(Theme.LightGray.rgb)
                      .toAttrs{
-                         attr("placeholder","Href")
+                         attr("placeholder",
+                             if(editorControl==EditorControl.Link) "Href"
+                             else "Image URL"
+                         )
                      }
              )
             Input(
@@ -149,7 +151,7 @@ fun LinkPopup(
                         val title=(document
                             .getElementById(IdUtils.linkTitleInput)
                                 as HTMLInputElement).value
-                        onLinkAdded(href,title)
+                        onAddClick(href,title)
                         onDialogDismiss()
                     }
                     .fillMaxWidth()

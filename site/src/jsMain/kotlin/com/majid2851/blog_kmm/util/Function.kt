@@ -111,7 +111,11 @@ fun applyStyle(controlStyle: ControlStyle)
 }
 
 
-fun applyControlStyle(editorControl: EditorControl, onLinkClick: () -> Unit)
+fun applyControlStyle(
+    editorControl: EditorControl,
+    onLinkClick: () -> Unit,
+    onImgClick:()->Unit,
+)
 {
     when(editorControl)
     {
@@ -155,12 +159,9 @@ fun applyControlStyle(editorControl: EditorControl, onLinkClick: () -> Unit)
                     selectedText = getSelectedText()
                 )
             )}
-//        EditorControl.Image->{
-//            applyStyle(
-//                controlStyle = ControlStyle.Image(
-//                    selectedText = getSelectedText()
-//                )
-//            )}
+        EditorControl.Image->{
+            onImgClick()
+        }
         else -> {}
     }
 
