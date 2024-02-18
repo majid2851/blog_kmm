@@ -284,7 +284,7 @@ fun CreateScreen()
                                         date = Date.now().toLong(),
                                         thumbnail = value.thumbnail,
                                         content = value.content,
-                                        category = value.category.name,
+                                        category = value.category,
                                         popular = value.popular,
                                         main = value.main,
                                         sponsored = value.sponsor,

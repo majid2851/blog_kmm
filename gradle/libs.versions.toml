@@ -1,9 +1,9 @@
 [versions]
-jetbrains-compose = "1.5.11"
+jetbrains-compose = "1.5.10"
 kobweb = "0.15.4"
-kotlin = "1.9.21"
-kmongo="4.11.0"
-serialization="1.4.1"
+kotlin = "1.9.20"
+kmongo="4.9.0"
+serialization="1.6.0"
 
 [libraries]
 kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
@@ -28,4 +28,5 @@ kobweb-worker = { id = "com.varabyte.kobweb.worker", version.ref = "kobweb" }
 kobwebx-markdown = { id = "com.varabyte.kobwebx.markdown", version.ref = "kobweb" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 

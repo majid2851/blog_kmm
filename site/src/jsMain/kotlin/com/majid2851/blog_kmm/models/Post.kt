@@ -24,7 +24,7 @@ actual data class PostWithoutDetails(
     @SerialName("_id")
     actual val id:String = "",
     actual val author:String,
-    actual val date:Double,
+    actual val date:Long,
     actual val title:String,
     actual val subtitle:String,
     actual val thumbnail:String,

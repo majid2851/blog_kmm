@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.kobweb.application)
     alias(libs.plugins.serialization.plugin)
-    // alias(libs.plugins.kobwebx.markdown)
+//    alias(libs.plugins.kotlin.jvm)
 }
 
 group = "com.majid2851.blog_kmm"
@@ -44,6 +44,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
+            implementation(libs.kotlinx.serialization)
         }
 
         jsMain.dependencies {
@@ -52,6 +53,7 @@ kotlin {
             implementation(libs.kobweb.silk)
             implementation(libs.silk.icons.fa)
             implementation(libs.kotlinx.serialization)
+            implementation ("org.jetbrains.kotlin:kotlin-stdlib:1.9.20")
             implementation(project(":worker"))
         }
         jvmMain.dependencies {

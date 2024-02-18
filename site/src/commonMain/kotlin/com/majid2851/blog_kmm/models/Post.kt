@@ -17,7 +17,7 @@ expect class Post{
 expect class PostWithoutDetails {
     val id: String
     val author: String
-    val date: Double
+    val date: Long
     val title: String
     val subtitle: String
     val thumbnail: String
