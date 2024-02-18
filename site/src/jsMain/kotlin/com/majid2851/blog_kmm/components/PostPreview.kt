@@ -47,6 +47,7 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
+import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.CSSColorValue
@@ -62,7 +63,7 @@ import org.jetbrains.compose.web.dom.CheckboxInput
 fun PostPreview(
     post:PostWithoutDetails
 ) {
-    Column {
+    Column(modifier = Modifier.fillMaxWidth(95.percent)) {
         Image(
             modifier = Modifier
                 .margin(bottom = 16.px)
@@ -116,25 +117,24 @@ fun PostPreview(
             text = post.subtitle
         )
 
-        SpanText(
-            modifier = Modifier
-            .margin(bottom = 10.px)
-            .fontFamily(FONT_FAMILY)
-            .color(Theme.HalfBlack.rgb)
-            .fontSize(16.px),
 
-            text = post.category.name
-        )
+        CategoryChip(category = post.category)
     }
 
 }
 
 @Composable
-fun Posts(posts:List<PostWithoutDetails>)
+fun Posts(
+    breakpoint: Breakpoint,
+    posts:List<PostWithoutDetails>
+)
 {
     Column(
         modifier = Modifier
-            .fillMaxWidth(90.percent),
+            .fillMaxWidth(
+                if(breakpoint>Breakpoint.MD)
+                80.percent else 90.percent
+            ),
         verticalArrangement = Arrangement.Center,
 
     ) {
@@ -146,6 +146,8 @@ fun Posts(posts:List<PostWithoutDetails>)
                 PostPreview(post = it)
             }
         }
+
+
 
 
     }

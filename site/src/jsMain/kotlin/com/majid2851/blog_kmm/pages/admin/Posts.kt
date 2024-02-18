@@ -162,7 +162,10 @@ fun PostScreen()
                 }
             }
 
-            Posts(posts = myPosts)
+            Posts(
+                posts = myPosts,
+                breakpoint = breakpoint
+            )
 
 
         }

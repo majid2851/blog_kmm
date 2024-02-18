@@ -66,15 +66,3 @@ object ApiListResponseSerializer : KSerializer<ApiListResponse> {
         }
     }
 }
-
-//object ApiListResponseSerializer:
-//        JsonContentPolymorphicSerializer
-//            <ApiListResponse>(ApiListResponse::class)
-//{
-//    override fun selectDeserializer(element: JsonElement) = when {
-//        "data" in element.jsonObject -> ApiListResponse.Success.serializer()
-//        "message" in element.jsonObject -> ApiListResponse.Error.serializer()
-//        else -> ApiListResponse.Idle.serializer()
-//    }
-//
-//}
