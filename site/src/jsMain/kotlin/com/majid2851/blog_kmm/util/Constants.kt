@@ -1,6 +1,7 @@
 package com.majid2851.blog_kmm.util
 
 object Constants {
+    const val POSTS_PER_PAGE: Int=8
     const val FONT_FAMILY="Roboto"
     const val SIDE_PANEL_WIDTH=250
     const val PAGE_WIDTH=1920

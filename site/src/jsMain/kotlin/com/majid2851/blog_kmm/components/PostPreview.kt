@@ -15,8 +15,10 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.css.Overflow
+import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextOverflow
 import com.varabyte.kobweb.compose.css.TransitionProperty
+import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -39,8 +41,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
+import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.modifiers.transition
+import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
@@ -126,6 +130,8 @@ fun PostPreview(
 @Composable
 fun Posts(
     breakpoint: Breakpoint,
+    onShowMore:()->Unit,
+    showMoreVisibility: Boolean,
     posts:List<PostWithoutDetails>
 )
 {
@@ -146,6 +152,25 @@ fun Posts(
                 PostPreview(post = it)
             }
         }
+
+
+        SpanText(
+            modifier = Modifier.fillMaxWidth()
+                .margin(topBottom = 50.px)
+                .textAlign(TextAlign.Center)
+                .fontFamily(FONT_FAMILY)
+                .fontSize(16.px)
+                .fontWeight(FontWeight.Medium)
+                .cursor(Cursor.Pointer)
+                .visibility(if(showMoreVisibility) Visibility.Visible
+                    else Visibility.Hidden
+                )
+                .onClick {
+                    onShowMore()
+                }
+            ,
+            text="Show More"
+        )
 
 
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.Posts
 import com.majid2851.blog_kmm.components.SearchBar
@@ -13,6 +14,7 @@ import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
+import com.majid2851.blog_kmm.util.Constants.POSTS_PER_PAGE
 import com.majid2851.blog_kmm.util.fetchMyPosts
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
@@ -45,6 +47,7 @@ import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
@@ -63,17 +66,23 @@ fun PostScreen()
 {
     val breakpoint = rememberBreakpoint()
     val selectable= remember { mutableStateOf(false) }
+    val postsToSkip= remember { mutableStateOf(0) }
+    val showMoreVisibility = remember{ mutableStateOf(false) }
     val text= remember{ mutableStateOf("Select") }
     val myPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+    val scope= rememberCoroutineScope()
 
 
     LaunchedEffect(Unit){
         fetchMyPosts(
-            skip = 0,
+            skip = postsToSkip.value,
             onSuccess = {
                 if (it is ApiListResponse.Success)
                 {
+                    myPosts.clear()
                     myPosts.addAll(it.data)
+                    postsToSkip.value += Constants.POSTS_PER_PAGE
+                    showMoreVisibility.value =it.data.size >= Constants.POSTS_PER_PAGE
                 }
             },
             onError = {
@@ -164,7 +173,36 @@ fun PostScreen()
 
             Posts(
                 posts = myPosts,
-                breakpoint = breakpoint
+                breakpoint = breakpoint,
+                showMoreVisibility = true,
+                onShowMore = {
+                    scope.launch {
+                        fetchMyPosts(
+                            skip = postsToSkip.value,
+                            onSuccess = {
+                                if (it is ApiListResponse.Success)
+                                {
+                                    if(it.data.isEmpty()){
+                                        myPosts.addAll(it.data)
+                                        postsToSkip.value += Constants.POSTS_PER_PAGE
+                                        showMoreVisibility.value =
+                                            it.data.size >= Constants.POSTS_PER_PAGE
+                                        if(it.data.size <Constants.POSTS_PER_PAGE){
+                                            showMoreVisibility.value=false
+                                        }
+                                    }else{
+                                        showMoreVisibility.value=false
+                                    }
+
+                                }
+                            },
+                            onError = {
+                                println(it)
+                            }
+                        )
+                    }
+
+                }
             )
 
 
