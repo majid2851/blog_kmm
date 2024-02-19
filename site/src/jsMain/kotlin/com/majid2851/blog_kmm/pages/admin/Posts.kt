@@ -2,6 +2,7 @@ package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,13 +13,17 @@ import com.majid2851.blog_kmm.components.SearchBar
 import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
+import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
+import com.majid2851.blog_kmm.util.Constants.QUERY_PARAM
+import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.deleteSelectedPosts
 import com.majid2851.blog_kmm.util.fetchMyPosts
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
 import com.majid2851.blog_kmm.util.parseSwitchText
+import com.majid2851.blog_kmm.util.searchPostByTitle
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -43,15 +48,19 @@ import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.forms.Switch
 import com.varabyte.kobweb.silk.components.forms.SwitchSize
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.browser.document
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 
 @Page
 @Composable
@@ -65,6 +74,7 @@ fun MyPosts()
 @Composable
 fun PostScreen()
 {
+    val context= rememberPageContext()
     val breakpoint = rememberBreakpoint()
     val selectable= remember { mutableStateOf(false) }
     val postsToSkip= remember { mutableStateOf(0) }
@@ -73,24 +83,57 @@ fun PostScreen()
     val myPosts = remember { mutableStateListOf<PostWithoutDetails>() }
     val selectedPosts= remember { mutableStateListOf<String>() }
     val scope= rememberCoroutineScope()
+    val hasParams = remember(key1 = context.route) {
+        context.route.params.containsKey(QUERY_PARAM)
+    }
+    val query= remember(key1 = context.route) {
+        try {
+            context.route.params.getValue(QUERY_PARAM)
+        }catch (e:Exception){
+            ""
+        }
+    }
 
 
-    LaunchedEffect(Unit){
-        fetchMyPosts(
-            skip = postsToSkip.value,
-            onSuccess = {
-                if (it is ApiListResponse.Success)
-                {
-                    myPosts.clear()
-                    myPosts.addAll(it.data)
-                    postsToSkip.value += Constants.POSTS_PER_PAGE
-                    showMoreVisibility.value =it.data.size >= Constants.POSTS_PER_PAGE
+    LaunchedEffect(context.route)
+    {
+        if(hasParams){
+            postsToSkip.value=0
+            searchPostByTitle(
+                query=query,
+                skip = postsToSkip.value,
+                onSuccess = {
+                    if (it is ApiListResponse.Success)
+                    {
+                        myPosts.clear()
+                        myPosts.addAll(it.data)
+                        postsToSkip.value += Constants.POSTS_PER_PAGE
+                        showMoreVisibility.value =it.data.size >= Constants.POSTS_PER_PAGE
+                    }
+                },
+                onError = {
+                    println(it)
                 }
-            },
-            onError = {
-                println(it)
-            }
-        )
+            )
+        }else{
+            fetchMyPosts(
+                skip = postsToSkip.value,
+                onSuccess = {
+                    if (it is ApiListResponse.Success)
+                    {
+                        myPosts.clear()
+                        myPosts.addAll(it.data)
+                        postsToSkip.value += Constants.POSTS_PER_PAGE
+                        showMoreVisibility.value =it.data.size >= Constants.POSTS_PER_PAGE
+                    }
+                },
+                onError = {
+                    println(it)
+                }
+            )
+        }
+
+
     }
 
 
@@ -122,7 +165,16 @@ fun PostScreen()
             {
                 SearchBar(
                     onEnterClick = {
+                        val query=(document.getElementById(
+                            IdUtils.adminSearchBar
+                        ) as HTMLInputElement).value
 
+                        if(query.isNotEmpty()){
+                            context.router.navigateTo(Screen.AdminMyPosts
+                                .searchByTitle(query = query))
+                        }else {
+                            context.router.navigateTo(Screen.AdminMyPosts.route)
+                        }
                     }
                 )
             }
@@ -215,29 +267,56 @@ fun PostScreen()
                 },
                 onShowMore = {
                     scope.launch {
-                        fetchMyPosts(
-                            skip = postsToSkip.value,
-                            onSuccess = {
-                                if (it is ApiListResponse.Success)
-                                {
-                                    if(it.data.isEmpty()){
-                                        myPosts.addAll(it.data)
-                                        postsToSkip.value += Constants.POSTS_PER_PAGE
-                                        showMoreVisibility.value =
-                                            it.data.size >= Constants.POSTS_PER_PAGE
-                                        if(it.data.size <Constants.POSTS_PER_PAGE){
+                        if(hasParams){
+                            searchPostByTitle(
+                                query=query,
+                                skip = postsToSkip.value,
+                                onSuccess = {
+                                    if (it is ApiListResponse.Success)
+                                    {
+                                        if(it.data.isEmpty()){
+                                            myPosts.addAll(it.data)
+                                            postsToSkip.value += Constants.POSTS_PER_PAGE
+                                            showMoreVisibility.value =
+                                                it.data.size >= Constants.POSTS_PER_PAGE
+                                            if(it.data.size <Constants.POSTS_PER_PAGE){
+                                                showMoreVisibility.value=false
+                                            }
+                                        }else{
                                             showMoreVisibility.value=false
                                         }
-                                    }else{
-                                        showMoreVisibility.value=false
-                                    }
 
+                                    }
+                                },
+                                onError = {
+                                    println(it)
                                 }
-                            },
-                            onError = {
-                                println(it)
-                            }
-                        )
+                            )
+                        }else{
+                            fetchMyPosts(
+                                skip = postsToSkip.value,
+                                onSuccess = {
+                                    if (it is ApiListResponse.Success)
+                                    {
+                                        if(it.data.isEmpty()){
+                                            myPosts.addAll(it.data)
+                                            postsToSkip.value += Constants.POSTS_PER_PAGE
+                                            showMoreVisibility.value =
+                                                it.data.size >= Constants.POSTS_PER_PAGE
+                                            if(it.data.size <Constants.POSTS_PER_PAGE){
+                                                showMoreVisibility.value=false
+                                            }
+                                        }else{
+                                            showMoreVisibility.value=false
+                                        }
+
+                                    }
+                                },
+                                onError = {
+                                    println(it)
+                                }
+                            )
+                        }
                     }
 
                 }

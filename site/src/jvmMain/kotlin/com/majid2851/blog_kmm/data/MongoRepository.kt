@@ -11,7 +11,10 @@ interface MongoRepository
     suspend fun checkUserId(id:String):Boolean
     suspend fun readMyPost(skip:Int,author:String):
             List<PostWithoutDetails>
-    suspend fun deleteSelectedPost(posts: List<String>)
-        :Boolean
+    suspend fun deleteSelectedPost(posts: List<String>):Boolean
+    suspend fun searchPostByTitle(
+        query:String,
+        skip: Int,
+    ):List<PostWithoutDetails>
 
 }

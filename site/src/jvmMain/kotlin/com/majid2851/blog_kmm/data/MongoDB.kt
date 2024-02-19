@@ -5,6 +5,7 @@ import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.User
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.DATABASE_NAME
+import com.majid2851.blog_kmm.util.Constants.POST_PER_PAGE
 import com.varabyte.kobweb.api.data.add
 import com.varabyte.kobweb.api.init.InitApi
 import com.varabyte.kobweb.api.init.InitApiContext
@@ -17,6 +18,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.`in`
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
+import org.litote.kmongo.regex
 
 
 //There was a very strange error here , if you want to run first call
@@ -101,6 +103,19 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
             .awaitLast()
             .wasAcknowledged()
 
+
+    }
+
+    override suspend fun searchPostByTitle(query: String, skip: Int):
+            List<PostWithoutDetails> {
+        val regexQuery=query.toRegex(RegexOption.IGNORE_CASE)
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::title regex regexQuery)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(POST_PER_PAGE)
+            .toList()
 
     }
 
