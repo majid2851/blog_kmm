@@ -24,7 +24,9 @@ import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
 import com.majid2851.blog_kmm.util.parseSwitchText
 import com.majid2851.blog_kmm.util.searchPostByTitle
+import com.varabyte.kobweb.compose.css.CSSTransition
 import com.varabyte.kobweb.compose.css.FontWeight
+import com.varabyte.kobweb.compose.css.TransitionProperty
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Box
@@ -45,6 +47,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
+import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.Page
@@ -98,6 +101,8 @@ fun PostScreen()
     LaunchedEffect(context.route)
     {
         if(hasParams){
+            (document.getElementById(IdUtils.adminSearchBar) as HTMLInputElement)
+                .value=query.replace("%20"," ")
             postsToSkip.value=0
             searchPostByTitle(
                 query=query,
@@ -164,6 +169,10 @@ fun PostScreen()
             )
             {
                 SearchBar(
+                    modifier = Modifier
+                        .visibility(if(selectable.value) Visibility.Hidden
+                        else Visibility.Visible)
+                        .transition(CSSTransition(property = TransitionProperty.All)),
                     onEnterClick = {
                         val query=(document.getElementById(
                             IdUtils.adminSearchBar
