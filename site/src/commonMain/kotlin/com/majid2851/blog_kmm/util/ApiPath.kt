@@ -8,4 +8,5 @@ object ApiPath
     const val readMyPosts="readMyPosts"
     const val searchPost="searchPost"
     const val deleteSelectedPosts="deleteSelectedPosts"
+    const val selectedPost="selectedPost"
 }

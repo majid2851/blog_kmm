@@ -2,7 +2,6 @@ package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +62,6 @@ import org.jetbrains.compose.web.css.percent
 import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Button
 import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLTextAreaElement
 
 @Page
 @Composable
@@ -174,13 +172,13 @@ fun PostScreen()
                         else Visibility.Visible)
                         .transition(CSSTransition(property = TransitionProperty.All)),
                     onEnterClick = {
-                        val query=(document.getElementById(
+                        val query2=(document.getElementById(
                             IdUtils.adminSearchBar
                         ) as HTMLInputElement).value
 
-                        if(query.isNotEmpty()){
+                        if(query2.isNotEmpty()){
                             context.router.navigateTo(Screen.AdminMyPosts
-                                .searchByTitle(query = query))
+                                .searchByTitle(query = query2))
                         }else {
                             context.router.navigateTo(Screen.AdminMyPosts.route)
                         }
@@ -265,7 +263,7 @@ fun PostScreen()
                 posts = myPosts,
                 breakpoint = breakpoint,
                 showMoreVisibility = true,
-                selectable = selectable.value,
+                selectableMode = selectable.value,
                 onSelect = {
                     selectedPosts.add(it)
                     switchText.value = parseSwitchText(selectedPosts.toList())

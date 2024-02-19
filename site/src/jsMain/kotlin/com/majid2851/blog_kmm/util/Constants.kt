@@ -8,6 +8,7 @@ object Constants {
     const val COLLAPSED_PANEL_HEIGHT= 100
     const val dayMiliSeconds=24*60*60*1000
     const val QUERY_PARAM="query"
+    const val POST_ID_PARAM="postId"
 
 }
 

@@ -2,6 +2,7 @@ package com.majid2851.blog_kmm.util
 
 import androidx.compose.runtime.clearCompositionErrors
 import com.majid2851.blog_kmm.models.ApiListResponse
+import com.majid2851.blog_kmm.models.ApiResponse
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.RandomJoke
 import com.majid2851.blog_kmm.models.User
@@ -173,6 +174,24 @@ suspend fun searchPostByTitle(
     }
 }
 
+suspend fun fetchSelectedPost(id: String):ApiResponse
+{
+    try {
+        val result= window.api.tryGet(
+            apiPath = ApiPath.selectedPost+"?${Constants.POST_ID_PARAM}=$id"
+        )?.decodeToString()
+        if(result!=null){
+            return Json.decodeFromString<ApiResponse>(result)
+        }else{
+            return ApiResponse.Error(message = "Result is Null")
+        }
+
+    }catch (e:Exception){
+        return ApiResponse.Error(message = e.message.toString())
+    }
+
+
+}
 
 
 

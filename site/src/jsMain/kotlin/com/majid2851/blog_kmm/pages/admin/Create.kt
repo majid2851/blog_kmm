@@ -1,6 +1,7 @@
 package com.majid2851.blog_kmm.pages.admin
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -8,6 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.LinkPopup
 import com.majid2851.blog_kmm.components.Popup
+import com.majid2851.blog_kmm.models.ApiResponse
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.ControlStyle
 import com.majid2851.blog_kmm.models.EditorControl
@@ -16,11 +18,13 @@ import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.pages.styles.EditorKeyStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
+import com.majid2851.blog_kmm.util.Constants.POST_ID_PARAM
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH
 import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.addPost
 import com.majid2851.blog_kmm.util.applyControlStyle
 import com.majid2851.blog_kmm.util.applyStyle
+import com.majid2851.blog_kmm.util.fetchSelectedPost
 import com.majid2851.blog_kmm.util.getEditor
 import com.majid2851.blog_kmm.util.getSelectedText
 import com.majid2851.blog_kmm.util.getValueBasedOnId
@@ -135,6 +139,19 @@ fun CreateScreen()
     val context= rememberPageContext()
     val uiState= remember {
         mutableStateOf(CreatePageUiEvent())
+    }
+    val hasPostParam = remember(key1 = context.route) {
+        context.route.params.containsKey(POST_ID_PARAM)
+    }
+    LaunchedEffect(hasPostParam)
+    {
+        if(hasPostParam==true){
+            val postId=context.route.params.getValue(POST_ID_PARAM)
+            val response= fetchSelectedPost(id=postId)
+            if(response is ApiResponse.Success){
+                println(response.data)
+            }
+        }
     }
 
     AdminPageLayout {

@@ -6,7 +6,10 @@ sealed class Screen(val route:String)
 {
     object AdminHome: Screen(route = "/admin/")
     object AdminLogin:Screen(route = "/admin/login")
-    object AdminCreatePost:Screen(route = "/admin/create")
+    object AdminCreatePost:Screen(route = "/admin/create"){
+        fun passPostId(id:String) = "/admin/create?${Constants.POST_ID_PARAM}" +
+                "=$id"
+    }
     object AdminMyPosts:Screen(route = "/admin/posts"){
         fun searchByTitle(query:String)=
              "/admin/posts?${Constants.QUERY_PARAM}=$query"

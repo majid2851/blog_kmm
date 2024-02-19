@@ -1,13 +1,11 @@
 package com.majid2851.blog_kmm.components
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
+import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.parseDateString
 import com.varabyte.kobweb.compose.css.CSSTransition
@@ -33,9 +31,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontFamily
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.fontWeight
-import com.varabyte.kobweb.compose.ui.modifiers.height
 import com.varabyte.kobweb.compose.ui.modifiers.margin
-import com.varabyte.kobweb.compose.ui.modifiers.marginBlock
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
@@ -46,17 +42,13 @@ import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.modifiers.transition
 import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.styleModifier
-import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
-import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
-import org.jetbrains.compose.web.css.CSSColorValue
-import org.jetbrains.compose.web.css.CSSSizeValue
-import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.LineStyle
 import org.jetbrains.compose.web.css.ms
 import org.jetbrains.compose.web.css.percent
@@ -66,34 +58,38 @@ import org.jetbrains.compose.web.dom.CheckboxInput
 @Composable
 fun PostPreview(
     post:PostWithoutDetails,
-    selectable:Boolean = false,
+    selectableMode:Boolean = false,
     onSelect:(String) ->Unit,
     onDeselect:(String) ->Unit,
 ) {
-    val checked= remember(selectable) { mutableStateOf(false) }
-    Column(modifier = Modifier.fillMaxWidth(95.percent))
-    {
+    val context= rememberPageContext()
+    val checked= remember(selectableMode) { mutableStateOf(false) }
+    Column(modifier = Modifier.fillMaxWidth(95.percent)) {
         Image(
             modifier = Modifier
                 .margin(bottom = 16.px)
                 .fillMaxWidth()
                 .borderRadius(r=4.px)
                 .border(
-                    width = if(selectable) 4.px else 0.px,
-                    style=if(selectable) LineStyle.Solid else LineStyle.None,
+                    width = if(selectableMode) 4.px else 0.px,
+                    style=if(selectableMode) LineStyle.Solid else LineStyle.None,
                     color=if(checked.value) Theme.Primary.rgb else Theme.LightGray.rgb
                 )
                 .onClick {
-                    if(selectable){
+                    if(selectableMode){
                         checked.value=!checked.value
                         if(checked.value){
                             onSelect(post.id)
                         }else{
                             onDeselect(post.id)
                         }
+                    }else{
+                        context.router.navigateTo(
+                            Screen.AdminCreatePost.passPostId(id=post.id)
+                        )
                     }
                 }
-                .padding(all=if(selectable) 10.px else 0.px)
+                .padding(all=if(selectableMode) 10.px else 0.px)
                 .cursor(Cursor.Pointer)
                 .transition(CSSTransition(
                     property = TransitionProperty.All,
@@ -155,7 +151,7 @@ fun PostPreview(
         )
         {
             CategoryChip(category = post.category)
-            if(selectable)
+            if(selectableMode)
             {
                 CheckboxInput(
                     checked = checked.value,
@@ -177,7 +173,7 @@ fun PostPreview(
 fun Posts(
     breakpoint: Breakpoint,
     posts:List<PostWithoutDetails>,
-    selectable:Boolean=false,
+    selectableMode:Boolean=false,
     onSelect: (String) -> Unit,
     onDeselect: (String) -> Unit,
     onShowMore:()->Unit,
@@ -200,7 +196,7 @@ fun Posts(
             posts.forEach {post->
                 PostPreview(
                     post = post,
-                    selectable = selectable,
+                    selectableMode = selectableMode,
                     onSelect = {onSelect(post.id)},
                     onDeselect = {onDeselect(post.id)}
                 )

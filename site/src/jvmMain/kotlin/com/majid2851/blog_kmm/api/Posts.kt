@@ -2,6 +2,7 @@ package com.majid2851.blog_kmm.api
 
 import com.majid2851.blog_kmm.data.MongoDB
 import com.majid2851.blog_kmm.models.ApiListResponse
+import com.majid2851.blog_kmm.models.ApiResponse
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.util.ApiPath
 import com.varabyte.kobweb.api.Api
@@ -105,3 +106,37 @@ suspend fun searchPostsByTitle(context: ApiContext)
     }
 
 }
+
+@Api(routeOverride = ApiPath.selectedPost)
+suspend fun selectedPost(context: ApiContext)
+{
+    val postId=context.req.params["postId"]
+    if(!postId.isNullOrEmpty()){
+        try {
+            val selectedPost=context.data.getValue<MongoDB>()
+                .readSelectedPost(id=postId)
+            context.res.setBodyText(
+                Json.encodeToString(
+                    ApiResponse.Success(
+                        data = selectedPost
+                    )
+                )
+            )
+        }catch (e:Exception){
+            context.res.setBodyText(
+                Json.encodeToString(
+                    ApiResponse.Error(
+                        message = "Selected Post doesn't exist."
+                    )
+                )
+            )
+        }
+    }
+
+
+
+}
+
+
+
+

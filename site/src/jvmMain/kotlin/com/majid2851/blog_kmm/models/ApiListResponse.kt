@@ -1,6 +1,9 @@
+@file:Suppress("PLUGIN_IS_NOT_ENABLED", "EXTERNAL_SERIALIZER_USELESS")
+
 package com.majid2851.blog_kmm.models
 
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
@@ -37,7 +40,27 @@ actual sealed class ApiListResponse
         :ApiListResponse()
 }
 
+@Serializable(ApiResponseSerializer::class)
+actual sealed class ApiResponse
+{
 
+    @Serializable
+    @SerialName("idle")
+    actual object Idle:ApiResponse()
+
+    @Serializable
+    @SerialName("success")
+    actual data class Success(val data:Post)
+        :ApiResponse()
+
+    @Serializable
+    @SerialName("error")
+    actual data class Error(val message:String)
+        :ApiResponse()
+}
+
+
+@OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = ApiListResponse::class)
 object ApiListResponseSerializer : KSerializer<ApiListResponse> {
 
@@ -63,6 +86,38 @@ object ApiListResponseSerializer : KSerializer<ApiListResponse> {
                 ApiListResponse.Error(message)
             }
             else -> ApiListResponse.Idle
+        }
+    }
+}
+
+
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializer(forClass = ApiResponse::class)
+object ApiResponseSerializer : KSerializer<ApiResponse> {
+
+    override val descriptor: SerialDescriptor =
+        buildClassSerialDescriptor("ApiResponse")
+
+    override fun serialize(encoder: Encoder, value: ApiResponse) {
+        // Serialization logic (not the focus here)
+    }
+
+    override fun deserialize(decoder: Decoder): ApiResponse {
+        val input = decoder as? JsonDecoder ?: throw
+        SerializationException("This serializer can only be used with JSON")
+        val element = input.decodeJsonElement()
+        return when {
+            "data" in element.jsonObject -> {
+                val data = Json.
+                decodeFromJsonElement<Post>(element.jsonObject["data"]!!)
+                ApiResponse.Success(data)
+            }
+            "message" in element.jsonObject -> {
+                val message = element.jsonObject["message"]!!.jsonPrimitive.content
+                ApiResponse.Error(message)
+            }
+            else -> ApiResponse.Idle
         }
     }
 }
