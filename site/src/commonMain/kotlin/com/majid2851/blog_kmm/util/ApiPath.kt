@@ -6,4 +6,5 @@ object ApiPath
     const val checkUserId="checkUserId"
     const val addPost="addpost"
     const val readMyPosts="readMyPosts"
+    const val deleteSelectedPosts="deleteSelectedPosts"
 }

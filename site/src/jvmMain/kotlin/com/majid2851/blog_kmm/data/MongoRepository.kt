@@ -9,6 +9,9 @@ interface MongoRepository
     suspend fun addPost(post:Post):Boolean
     suspend fun checkUserExistence(user: User) : User ?
     suspend fun checkUserId(id:String):Boolean
-    suspend fun readMyPost(skip:Int,author:String):List<PostWithoutDetails>
+    suspend fun readMyPost(skip:Int,author:String):
+            List<PostWithoutDetails>
+    suspend fun deleteSelectedPost(posts: List<String>)
+        :Boolean
 
 }

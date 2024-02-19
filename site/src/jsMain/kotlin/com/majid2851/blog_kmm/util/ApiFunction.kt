@@ -1,5 +1,6 @@
 package com.majid2851.blog_kmm.util
 
+import androidx.compose.runtime.clearCompositionErrors
 import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.RandomJoke
@@ -138,10 +139,26 @@ suspend fun fetchMyPosts(
 
 
     }catch (e:Exception){
+        onError(e)
+    }
+}
 
+suspend fun deleteSelectedPosts(ids:List<String>):Boolean
+{
+    try {
+        val result= window.api.tryPost(
+            apiPath = ApiPath.deleteSelectedPosts,
+            body = Json.encodeToString(ids).encodeToByteArray()
+        )?.decodeToString()
+        return result.toBoolean()
+    }catch (e:Exception){
+        println(e.message)
+        return false
     }
 
+
 }
+
 
 
 

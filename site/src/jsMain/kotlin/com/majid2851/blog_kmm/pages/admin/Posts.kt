@@ -14,6 +14,7 @@ import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
+import com.majid2851.blog_kmm.util.deleteSelectedPosts
 import com.majid2851.blog_kmm.util.fetchMyPosts
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
@@ -169,8 +170,28 @@ fun PostScreen()
                         .fontFamily(FONT_FAMILY)
                         .fontSize(14.px)
                         .fontWeight(FontWeight.Medium)
-                        .visibility(Visibility.Visible)
+                        .visibility(
+                            if(selectedPosts.isNotEmpty())
+                                Visibility.Visible
+                            else Visibility.Hidden
+                        )
                         .onClick {
+                            scope.launch {
+                                val result= deleteSelectedPosts(ids=selectedPosts)
+                                if(result==true){
+                                    selectable.value=false
+                                    switchText.value="Select"
+                                    postsToSkip.value -=selectedPosts.size
+
+                                    selectedPosts.forEach {deletedPostId->
+                                        myPosts.removeAll{
+                                            it.id==deletedPostId
+                                        }
+                                    }
+                                    selectedPosts.clear()
+
+                                }
+                            }
 
                         }
                         .toAttrs()
