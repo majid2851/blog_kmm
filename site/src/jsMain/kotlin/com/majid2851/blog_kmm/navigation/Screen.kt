@@ -16,7 +16,9 @@ sealed class Screen(val route:String)
 
     }
     object AdminLogout:Screen(route = "/admin/logout")
-    object AdminSuccess:Screen(route = "/admin/success")
+    object AdminSuccess:Screen(route = "/admin/success"){
+        fun postUpdated() ="/admin/success?${Constants.UpdateParam}=true"
+    }
 
 
 

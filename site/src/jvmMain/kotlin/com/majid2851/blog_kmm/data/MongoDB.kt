@@ -19,6 +19,7 @@ import org.litote.kmongo.`in`
 import org.litote.kmongo.reactivestreams.KMongo
 import org.litote.kmongo.reactivestreams.getCollection
 import org.litote.kmongo.regex
+import org.litote.kmongo.setValue
 
 
 //There was a very strange error here , if you want to run first call
@@ -122,6 +123,25 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
     override suspend fun readSelectedPost(id: String): Post {
         return postCollection.find(Post::id eq id)
             .toList().first()
+    }
+
+    override suspend fun updatePost(post: Post): Boolean {
+        return postCollection
+            .updateOne(
+                Post::id eq post.id,
+                mutableListOf(
+                    setValue(Post::title,post.title),
+                    setValue(Post::subtitle,post.subtitle),
+                    setValue(Post::category,post.category),
+                    setValue(Post::thumbnail,post.thumbnail),
+                    setValue(Post::content,post.content),
+                    setValue(Post::main,post.main),
+                    setValue(Post::popular,post.popular),
+                    setValue(Post::sponsored,post.sponsored),
+                )
+            )
+            .awaitLast()
+            .wasAcknowledged()
     }
 
 }

@@ -24,4 +24,6 @@ interface MongoRepository
 
     suspend fun readSelectedPost(id:String):Post
 
+    suspend fun updatePost(post:Post):Boolean
+
 }

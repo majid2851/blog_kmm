@@ -30,6 +30,7 @@ import com.majid2851.blog_kmm.util.getSelectedText
 import com.majid2851.blog_kmm.util.getValueBasedOnId
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
+import com.majid2851.blog_kmm.util.updatePost
 import com.varabyte.kobweb.browser.file.loadDataUrlFromDisk
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -331,31 +332,45 @@ fun CreateScreen()
                             value.content.isNotEmpty()
                         ){
                             scope.launch {
-                                val result= addPost(
-                                    Post(
-                                        author = localStorage.
-                                        getItem(IdUtils.userName).toString(),
-                                        title = value.title,
-                                        subtitle = value.subtitle,
-                                        date = Date.now().toLong(),
-                                        thumbnail = value.thumbnail,
-                                        content = value.content,
-                                        category = value.category,
-                                        popular = value.popular,
-                                        main = value.main,
-                                        sponsored = value.sponsor,
+                                if (hasPostParam){
+                                    val result= updatePost(
+                                        Post(
+                                            id = value.id,
+                                            title = value.title,
+                                            subtitle = value.subtitle,
+                                            date = Date.now().toLong(),
+                                            thumbnail = value.thumbnail,
+                                            content = value.content,
+                                            category = value.category,
+                                            popular = value.popular,
+                                            main = value.main,
+                                            sponsored = value.sponsor,
+                                         )
                                     )
-                                )
-                                if(result){
-                                   context.router.navigateTo(Screen.AdminSuccess.route)
-
+                                    if(result){
+                                        context.router.navigateTo(Screen.AdminSuccess.postUpdated())
+                                    }
                                 }else{
-                                    setPopubMessage(
-                                        scope = scope,
-                                        state=uiState,
-                                        title="There is a Problem!"
+                                    val result= addPost(
+                                        Post(
+                                            author = localStorage.
+                                            getItem(IdUtils.userName).toString(),
+                                            title = value.title,
+                                            subtitle = value.subtitle,
+                                            date = Date.now().toLong(),
+                                            thumbnail = value.thumbnail,
+                                            content = value.content,
+                                            category = value.category,
+                                            popular = value.popular,
+                                            main = value.main,
+                                            sponsored = value.sponsor,
+                                        )
                                     )
+                                    if(result){
+                                        context.router.navigateTo(Screen.AdminSuccess.route)
+                                    }
                                 }
+
                             }
 
 

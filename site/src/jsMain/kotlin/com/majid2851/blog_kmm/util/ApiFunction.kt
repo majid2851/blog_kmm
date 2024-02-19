@@ -119,6 +119,20 @@ suspend fun addPost(post:Post):Boolean
     }
 }
 
+suspend fun updatePost(post: Post):Boolean{
+    return try {
+        window.api.tryPost(
+            apiPath = ApiPath.updatePost,
+            body = Json.encodeToString(post).encodeToByteArray()
+        )?.decodeToString().toBoolean()
+
+    }catch (e:Exception){
+        println(e)
+        false
+    }
+
+}
+
 suspend fun fetchMyPosts(
     skip:Int,
     onSuccess:(ApiListResponse) ->Unit,

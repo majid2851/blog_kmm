@@ -111,6 +111,27 @@ suspend fun searchPostsByTitle(context: ApiContext)
 
 }
 
+@Api(routeOverride = ApiPath.updatePost)
+suspend fun updatePost(context: ApiContext)
+{
+    try {
+        val updatedPost=context.req.getBody<Post>()
+        context.res.setBody(
+            updatedPost?.let {
+                context.data.getValue<MongoDB>()
+                    .updatePost(it)
+            }
+        )
+
+
+
+
+    }catch (e:Exception){
+        context.res.setBody(e.message)
+    }
+
+}
+
 @Api(routeOverride = ApiPath.selectedPost)
 suspend fun selectedPost(context: ApiContext)
 {
@@ -134,8 +155,6 @@ suspend fun selectedPost(context: ApiContext)
             message = "Selected Post doesn't exist."
         ))
     }
-
-
 
 }
 

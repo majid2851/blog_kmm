@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
+import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Res
 import com.varabyte.kobweb.core.rememberPageContext
@@ -27,10 +28,13 @@ import org.jetbrains.compose.web.css.px
 fun Success()
 {
     val context = rememberPageContext()
+    val postUpdated=context.route.params.containsKey(
+        Constants.UpdateParam
+    )
 
     LaunchedEffect(Unit)
     {
-        delay(5000)
+        delay(2500)
         context.router.navigateTo(Screen.AdminHome.route)
 
     }
@@ -49,7 +53,8 @@ fun Success()
             modifier = Modifier
                 .fontFamily(FONT_FAMILY)
                 .fontSize(24.px),
-            text = "Post Successfully Created!"
+            text =if(postUpdated==true)"Post Successfully Updated." else
+                "Post Successfully Created!"
         )
         SpanText(
             modifier = Modifier
