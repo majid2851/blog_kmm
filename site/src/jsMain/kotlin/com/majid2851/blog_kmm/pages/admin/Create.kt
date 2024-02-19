@@ -16,7 +16,7 @@ import com.majid2851.blog_kmm.models.EditorControl
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
-import com.majid2851.blog_kmm.pages.styles.EditorKeyStyle
+import com.majid2851.blog_kmm.styles.EditorKeyStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Constants.POST_ID_PARAM
 import com.majid2851.blog_kmm.util.Constants.SIDE_PANEL_WIDTH

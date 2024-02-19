@@ -1,4 +1,4 @@
-package com.majid2851.blog_kmm.pages.styles
+package com.majid2851.blog_kmm.styles
 
 import com.majid2851.blog_kmm.models.Theme
 import com.varabyte.kobweb.compose.css.CSSTransition

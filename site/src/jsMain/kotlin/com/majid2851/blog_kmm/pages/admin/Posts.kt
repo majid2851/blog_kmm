@@ -167,6 +167,7 @@ fun PostScreen()
             )
             {
                 SearchBar(
+                    breakpoint=breakpoint,
                     modifier = Modifier
                         .visibility(if(selectable.value) Visibility.Hidden
                         else Visibility.Visible)
@@ -182,7 +183,12 @@ fun PostScreen()
                         }else {
                             context.router.navigateTo(Screen.AdminMyPosts.route)
                         }
-                    }
+                    },
+                    onSearchIconClick = {
+
+                    },
+
+
                 )
             }
 

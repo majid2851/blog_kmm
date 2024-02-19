@@ -8,7 +8,7 @@ import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.models.User
 import com.majid2851.blog_kmm.models.UserWithoutPassword
 import com.majid2851.blog_kmm.navigation.Screen
-import com.majid2851.blog_kmm.pages.styles.LoginInputStyle
+import com.majid2851.blog_kmm.styles.LoginInputStyle
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Res
 import com.majid2851.blog_kmm.util.IdUtils

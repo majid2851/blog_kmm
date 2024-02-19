@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
-import com.majid2851.blog_kmm.pages.styles.NavigationItemStyle
+import com.majid2851.blog_kmm.styles.NavigationItemStyle
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
 import com.majid2851.blog_kmm.util.Res
