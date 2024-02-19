@@ -113,13 +113,31 @@ data class CreatePageUiEvent(
     val thumbnailInputDisabled: Boolean=false,
     val editorVisibility: Boolean=true,
     val main:Boolean=false,
+    val buttonText:String="",
     val popular:Boolean=false,
     val sponsor:Boolean=false,
     val messagePopupVisibility:Boolean =false,
     val popupMessage:String="",
     val linkPopup:Boolean=false,
     val imgPopup:Boolean=false,
-)
+){
+    fun reset() = this.copy(
+        id = "",
+        title = "",
+        subtitle = "",
+        thumbnail = "",
+        content = "",
+        category = Category.Programming,
+        buttonText = "Create",
+        main = false,
+        popular = false,
+        sponsor = false,
+        editorVisibility = true,
+        messagePopupVisibility = false,
+        linkPopup = false,
+        imgPopup = false
+    )
+}
 
 @Page
 @Composable
@@ -148,9 +166,30 @@ fun CreateScreen()
         if(hasPostParam==true){
             val postId=context.route.params.getValue(POST_ID_PARAM)
             val response= fetchSelectedPost(id=postId)
-            if(response is ApiResponse.Success){
+            if(response is ApiResponse.Success)
+            {
+                (document.getElementById(IdUtils.editor) as
+                    HTMLTextAreaElement).value=response.data.content
+
+                uiState.value=uiState.value.copy(
+                    id = response.data.id,
+                    title = response.data.title,
+                    subtitle = response.data.subtitle,
+                    content = response.data.subtitle,
+                    category = response.data.category,
+                    thumbnail = response.data.thumbnail,
+                    main = response.data.main,
+                    popular = response.data.popular,
+                    buttonText = "Update"
+                )
                 println(response.data)
             }
+        }
+        else{
+            (document.getElementById(IdUtils.editor)
+                as HTMLTextAreaElement
+            ).value=""
+            uiState.value=uiState.value.reset()
         }
     }
 
@@ -207,12 +246,14 @@ fun CreateScreen()
                 CustomInput(
                     placeHolder = "Title",
                     marginTop = 12,
-                    inputId = IdUtils.titleInput
+                    inputId = IdUtils.titleInput,
+                    value = uiState.value.title
                 )
 
                 CustomInput(
                     placeHolder = "Subtitle",
                     inputId = IdUtils.subtitleInput,
+                    value = uiState.value.subtitle,
                 )
 
                 CategoryDropDown(
@@ -238,8 +279,6 @@ fun CreateScreen()
                     thumbnailName =uiState.value.thumbnailName ,
                     thumbnailInputDisabled = !uiState.value.thumbnailInputDisabled,
                     onThumbnailSelect = { name,file ->
-//                        (document.getElementById(IdUtils.thumbnailInput)
-//                                as HTMLInputElement).value =name
                         uiState.value=uiState.value.copy(
                             thumbnail = file,
                             thumbnailName = name
@@ -270,8 +309,8 @@ fun CreateScreen()
                 Editor(editorVisibility =  uiState.value.editorVisibility)
 
                 createButton(
+                    title = uiState.value.buttonText,
                     onClick = {
-
                         uiState.value=uiState.value.copy(
                             title =getValueBasedOnId(IdUtils.titleInput) ,
                             subtitle = getValueBasedOnId(IdUtils.subtitleInput) ,
@@ -408,7 +447,7 @@ private fun setPopubMessage(
 
 
 @Composable
-private fun createButton(onClick: () -> Unit)
+private fun createButton(onClick: () -> Unit,title:String)
 {
     Button(
         attrs = Modifier
@@ -424,7 +463,7 @@ private fun createButton(onClick: () -> Unit)
             .fontSize(16.px)
             .toAttrs()
     ) {
-        SpanText("Create")
+        SpanText(title)
     }
 }
 
@@ -765,6 +804,7 @@ private fun CustomInput(
     placeHolder:String,
     marginTop:Int=0,
     inputId:String,
+    value:String="",
 )
 {
     Input(
@@ -781,6 +821,7 @@ private fun CustomInput(
             .fontSize(16.px)
             .toAttrs {
                 attr("placeholder", placeHolder)
+                attr("value",value)
             }
 
     )
