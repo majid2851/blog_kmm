@@ -14,10 +14,10 @@ import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.Constants.FONT_FAMILY
-import com.majid2851.blog_kmm.util.Constants.POSTS_PER_PAGE
 import com.majid2851.blog_kmm.util.fetchMyPosts
 import com.majid2851.blog_kmm.util.isUserLoggedIn
 import com.majid2851.blog_kmm.util.noBorder
+import com.majid2851.blog_kmm.util.parseSwitchText
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
@@ -68,8 +68,9 @@ fun PostScreen()
     val selectable= remember { mutableStateOf(false) }
     val postsToSkip= remember { mutableStateOf(0) }
     val showMoreVisibility = remember{ mutableStateOf(false) }
-    val text= remember{ mutableStateOf("Select") }
+    val switchText= remember{ mutableStateOf("Select") }
     val myPosts = remember { mutableStateListOf<PostWithoutDetails>() }
+    val selectedPosts= remember { mutableStateListOf<String>() }
     val scope= rememberCoroutineScope()
 
 
@@ -142,11 +143,18 @@ fun PostScreen()
                         checked = selectable.value,
                         onCheckedChange = {
                             selectable.value=it
+                            if(!selectable.value){
+                                switchText.value="Select"
+                                selectedPosts.clear()
+                            }else {
+                                switchText.value="0 Posts Selected."
+                            }
+
                         }
                     )
                     SpanText(
                         modifier = Modifier.color(Theme.HalfBlack.rgb),
-                        text = text.value
+                        text = switchText.value
                     )
                 }
                 Button(
@@ -175,6 +183,15 @@ fun PostScreen()
                 posts = myPosts,
                 breakpoint = breakpoint,
                 showMoreVisibility = true,
+                selectable = selectable.value,
+                onSelect = {
+                    selectedPosts.add(it)
+                    switchText.value = parseSwitchText(selectedPosts.toList())
+                },
+                onDeselect = {
+                    selectedPosts.remove(it)
+                    switchText.value = parseSwitchText(selectedPosts.toList())
+                },
                 onShowMore = {
                     scope.launch {
                         fetchMyPosts(

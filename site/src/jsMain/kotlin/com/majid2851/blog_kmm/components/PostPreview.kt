@@ -65,13 +65,40 @@ import org.jetbrains.compose.web.dom.CheckboxInput
 
 @Composable
 fun PostPreview(
-    post:PostWithoutDetails
+    post:PostWithoutDetails,
+    selectable:Boolean = false,
+    onSelect:(String) ->Unit,
+    onDeselect:(String) ->Unit,
 ) {
-    Column(modifier = Modifier.fillMaxWidth(95.percent)) {
+    val checked= remember(selectable) { mutableStateOf(false) }
+    Column(modifier = Modifier.fillMaxWidth(95.percent))
+    {
         Image(
             modifier = Modifier
                 .margin(bottom = 16.px)
                 .fillMaxWidth()
+                .borderRadius(r=4.px)
+                .border(
+                    width = if(selectable) 4.px else 0.px,
+                    style=if(selectable) LineStyle.Solid else LineStyle.None,
+                    color=if(checked.value) Theme.Primary.rgb else Theme.LightGray.rgb
+                )
+                .onClick {
+                    if(selectable){
+                        checked.value=!checked.value
+                        if(checked.value){
+                            onSelect(post.id)
+                        }else{
+                            onDeselect(post.id)
+                        }
+                    }
+                }
+                .padding(all=if(selectable) 10.px else 0.px)
+                .cursor(Cursor.Pointer)
+                .transition(CSSTransition(
+                    property = TransitionProperty.All,
+                    duration = 200.ms
+                ))
                 .objectFit(ObjectFit.Cover),
             src = post.thumbnail,
             description = "Post Thumbnail Image"
@@ -121,8 +148,27 @@ fun PostPreview(
             text = post.subtitle
         )
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        )
+        {
+            CategoryChip(category = post.category)
+            if(selectable)
+            {
+                CheckboxInput(
+                    checked = checked.value,
+                    attrs = Modifier
+                        .size(20.px)
+                        .toAttrs()
 
-        CategoryChip(category = post.category)
+                )
+            }
+
+
+        }
+
     }
 
 }
@@ -130,9 +176,12 @@ fun PostPreview(
 @Composable
 fun Posts(
     breakpoint: Breakpoint,
+    posts:List<PostWithoutDetails>,
+    selectable:Boolean=false,
+    onSelect: (String) -> Unit,
+    onDeselect: (String) -> Unit,
     onShowMore:()->Unit,
     showMoreVisibility: Boolean,
-    posts:List<PostWithoutDetails>
 )
 {
     Column(
@@ -148,8 +197,13 @@ fun Posts(
             modifier = Modifier.fillMaxWidth(),
             numColumns = numColumns(base = 1,sm=2, md = 3,lg=4)
         ){
-            posts.forEach {
-                PostPreview(post = it)
+            posts.forEach {post->
+                PostPreview(
+                    post = post,
+                    selectable = selectable,
+                    onSelect = {onSelect(post.id)},
+                    onDeselect = {onDeselect(post.id)}
+                )
             }
         }
 
