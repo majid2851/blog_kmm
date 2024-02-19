@@ -8,6 +8,8 @@ import com.majid2851.blog_kmm.util.ApiPath
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
+import com.varabyte.kobweb.api.http.Request
+import com.varabyte.kobweb.api.http.Response
 import com.varabyte.kobweb.api.http.setBodyText
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -17,10 +19,11 @@ import org.litote.kmongo.id.ObjectIdGenerator
 suspend fun addPost(context:ApiContext)
 {
     try {
-        val post = context.req.body
-            ?.decodeToString()?.let {
-                Json.decodeFromString<Post>(it)
-            }
+        val post=context.req.getBody<Post>()
+//        val post = context.req.body
+//            ?.decodeToString()?.let {
+//                Json.decodeFromString<Post>(it)
+//            }
         val newPost=post?.copy(id = ObjectIdGenerator.newObjectId<String>().id
             .toHexString())
 
@@ -67,17 +70,20 @@ suspend fun readMyPosts(context: ApiContext)
 suspend fun deleteSelectedPosts(context: ApiContext)
 {
     try {
-        val request=context.req.body?.decodeToString()?.let{
-            Json.decodeFromString<List<String>>(it)
-        }
-        context.res.setBodyText(
+        val request=context.req.getBody<List<String>>()
+
+//        val request=context.req.body?.decodeToString()?.let{
+//            Json.decodeFromString<List<String>>(it)
+//        }
+        context.res.setBody(
             request?.let {
                 context.data.getValue<MongoDB>()
-                    .deleteSelectedPost(ids = it).toString()
-            } ?:"false"
+                    .deleteSelectedPost(ids = it)
+            }
+
         )
     }catch (e:Exception){
-        context.res.setBodyText(Json.encodeToString(e.message))
+        context.res.setBody(e.message)
     }
 }
 
@@ -92,17 +98,15 @@ suspend fun searchPostsByTitle(context: ApiContext)
                 query=query,
                 skip=skip
             )
-        context.res.setBodyText(
-            Json.encodeToString(
-                ApiListResponse.Success(data = request)
-            )
+        context.res.setBody(
+            ApiListResponse.Success(data = request)
         )
 
     }catch (e:Exception){
-        context.res.setBodyText(
-            Json.encodeToString(ApiListResponse.
-                Error(message = e.message.toString()))
+        context.res.setBody(
+            ApiListResponse.Error(message = e.message.toString())
         )
+
     }
 
 }
@@ -115,22 +119,20 @@ suspend fun selectedPost(context: ApiContext)
         try {
             val selectedPost=context.data.getValue<MongoDB>()
                 .readSelectedPost(id=postId)
-            context.res.setBodyText(
-                Json.encodeToString(
+            context.res.setBody(
                     ApiResponse.Success(
                         data = selectedPost
                     )
-                )
             )
         }catch (e:Exception){
-            context.res.setBodyText(
-                Json.encodeToString(
-                    ApiResponse.Error(
-                        message = "Selected Post doesn't exist."
-                    )
-                )
-            )
+            context.res.setBody(ApiResponse.Error(
+                message = e.message.toString()
+            ))
         }
+    }else{
+        context.res.setBody(ApiResponse.Error(
+            message = "Selected Post doesn't exist."
+        ))
     }
 
 
@@ -138,5 +140,16 @@ suspend fun selectedPost(context: ApiContext)
 }
 
 
+//TODO(I have to read about reified and inline )
+inline fun <reified T> Response.setBody(data:T)
+{
+    setBodyText(Json.encodeToString(data))
+}
+
+
+inline fun <reified T> Request.getBody():T?
+{
+    return body?.decodeToString()?.let{return Json.decodeFromString(it)}
+}
 
 

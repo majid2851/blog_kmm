@@ -131,7 +131,7 @@ suspend fun fetchMyPosts(
                 apiPath = ApiPath.readMyPosts+"?"+"skip=$skip&author" +
                         "=${localStorage.getItem(IdUtils.userName)}"
             )?.decodeToString()
-            onSuccess(Json.decodeFromString(result.toString()))
+            onSuccess(result.parseData())
 
 
         } catch (e: Exception) {
@@ -168,7 +168,7 @@ suspend fun searchPostByTitle(
         val result=window.api.tryGet(
             apiPath = ApiPath.searchPost+"?query=$query&skip=$skip",
         )?.decodeToString()
-        onSuccess(Json.decodeFromString(result.toString()))
+        onSuccess(result.parseData())
     }catch (e:Exception) {
         onError(e)
     }
@@ -181,7 +181,9 @@ suspend fun fetchSelectedPost(id: String):ApiResponse
             apiPath = ApiPath.selectedPost+"?${Constants.POST_ID_PARAM}=$id"
         )?.decodeToString()
         if(result!=null){
-            return Json.decodeFromString<ApiResponse>(result)
+            return result.parseData<ApiResponse>()
+//            return Json.decodeFromString<ApiResponse>(result)
+
         }else{
             return ApiResponse.Error(message = "Result is Null")
         }
@@ -191,6 +193,10 @@ suspend fun fetchSelectedPost(id: String):ApiResponse
     }
 
 
+}
+
+inline fun <reified T> String?.parseData():T {
+    return Json.decodeFromString(this.toString())
 }
 
 
