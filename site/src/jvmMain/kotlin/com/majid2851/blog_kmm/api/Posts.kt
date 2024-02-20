@@ -172,6 +172,21 @@ suspend fun readMainPosts(context: ApiContext)
 }
 
 
+@Api(routeOverride = ApiPath.readLatestPosts)
+suspend fun readLatestPosts(context: ApiContext)
+{
+    try {
+        val skip=context.req.params["skip"]?.toInt() ?: 0
+        val latestPosts=context.data.getValue<MongoDB>().readLatestPosts(skip=skip)
+        context.res.setBody(ApiListResponse.Success(latestPosts))
+
+    }catch (e:Exception){
+        context.res.setBody(ApiListResponse.Error(
+            message = e.message.toString()
+        ))
+    }
+
+}
 
 
 

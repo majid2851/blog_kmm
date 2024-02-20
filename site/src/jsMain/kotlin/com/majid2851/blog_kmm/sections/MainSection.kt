@@ -71,6 +71,9 @@ fun MainPosts(
             PostPreview(
                 post = posts.first(),
                 darkTheme = true,
+                onClick = {
+
+                }
             )
             Column(
                 modifier = Modifier
@@ -85,7 +88,9 @@ fun MainPosts(
                         vertical = false ,
                         thumbnailHeight = 200.px,
 //                        titleMaxLines = 1,
-//                        onClick = { onClick(postWithoutDetails._id) }
+                        onClick = {
+//                            onClick(postWithoutDetails._id)
+                        }
                     )
                 }
             }
@@ -94,14 +99,18 @@ fun MainPosts(
                 PostPreview(
                     post = posts.first(),
                     darkTheme = true,
-//                    onClick = { onClick(posts.first()._id) }
+                    onClick = {
+//                        onClick(posts.first()._id)
+                    }
                 )
             }
             Box(modifier = Modifier.margin(left = 10.px)) {
                 PostPreview(
                     post = posts[1],
                     darkTheme = true,
-//                    onClick = { onClick(posts[1]._id) }
+                    onClick = {
+//                        onClick(posts[1]._id)
+                    }
                 )
             }
         } else {
@@ -109,7 +118,9 @@ fun MainPosts(
                 post = posts.first(),
                 darkTheme = true,
                 thumbnailHeight = 640.px,
-//                onClick = { onClick(posts.first()._id) }
+                onClick = {
+//                    onClick(posts.first()._id)
+                }
             )
         }
     }

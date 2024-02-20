@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
-import com.majid2851.blog_kmm.components.Posts
+import com.majid2851.blog_kmm.components.PostsView
 import com.majid2851.blog_kmm.components.SearchBar
 import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.PostWithoutDetails
@@ -265,7 +265,7 @@ fun PostScreen()
                 }
             }
 
-            Posts(
+            PostsView(
                 posts = myPosts,
                 breakpoint = breakpoint,
                 showMoreVisibility = true,
@@ -331,7 +331,11 @@ fun PostScreen()
                             )
                         }
                     }
-
+                },
+                onClick ={
+                    context.router.navigateTo(Screen.AdminCreatePost.passPostId(
+                        id=it
+                    ))
                 }
             )
 

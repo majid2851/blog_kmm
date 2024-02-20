@@ -71,11 +71,51 @@ fun PostPreview(
     vertical: Boolean = true,
     onSelect: (String) -> Unit = {},
     onDeselect: (String) -> Unit = {},
+    onClick:(String)->Unit
 ) {
     val context = rememberPageContext()
     val checked = remember(selectableMode) { mutableStateOf(false) }
     if (vertical) {
-        Column(modifier = Modifier.fillMaxWidth(95.percent)) {
+        Column(
+            modifier = Modifier
+//                .thenIf(
+//                    condition = post.main,
+//                    other = MainPostPreviewStyle.toModifier()
+//                )
+//                .thenIf(
+//                    condition = !post.main,
+//                    other = PostPreviewStyle.toModifier()
+//                )
+//                .then(modifier)
+                .fillMaxWidth(
+                    if (darkTheme) 100.percent
+//                    else if (titleColor == Theme.Sponsored.rgb) 100.percent
+                    else 95.percent
+                )
+                .margin(bottom = 24.px)
+                .padding(all = if (selectableMode) 10.px else 0.px)
+                .borderRadius(r = 4.px)
+                .border(
+                    width = if (selectableMode) 4.px else 0.px,
+                    style = if (selectableMode) LineStyle.Solid else LineStyle.None,
+                    color = if (checked.value) Theme.Primary.rgb else Theme.LightGray.rgb
+                )
+                .onClick {
+                    if (selectableMode) {
+                        checked.value = !checked.value
+                        if (checked.value) {
+                            onSelect(post.id)
+                        } else {
+                            onDeselect(post.id)
+                        }
+                    } else {
+                        onClick(post.id)
+                    }
+                }
+                .transition(CSSTransition(property = TransitionProperty.All, duration = 200.ms))
+                .cursor(Cursor.Pointer)
+        )
+        {
             PostContent(
                 selectableMode = selectableMode,
                 checked = checked,
@@ -141,6 +181,7 @@ private fun PostContent(
                         onDeselect(post.id)
                     }
                 } else {
+
                     context.router.navigateTo(
                         Screen.AdminCreatePost.passPostId(id = post.id)
                     )
@@ -207,49 +248,3 @@ private fun PostContent(
 
 }
 
-@Composable
-fun Posts(
-    breakpoint: Breakpoint,
-    posts: List<PostWithoutDetails>,
-    selectableMode: Boolean = false,
-    onSelect: (String) -> Unit,
-    onDeselect: (String) -> Unit,
-    onShowMore: () -> Unit,
-    showMoreVisibility: Boolean,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(
-            if (breakpoint > Breakpoint.MD) 80.percent else 90.percent
-        ),
-        verticalArrangement = Arrangement.Center,
-
-        ) {
-        SimpleGrid(
-            modifier = Modifier.fillMaxWidth(),
-            numColumns = numColumns(base = 1, sm = 2, md = 3, lg = 4)
-        ) {
-            posts.forEach { post ->
-                PostPreview(post = post,
-                    selectableMode = selectableMode,
-                    onSelect = { onSelect(post.id) },
-                    onDeselect = { onDeselect(post.id) })
-            }
-        }
-
-
-        SpanText(
-            modifier = Modifier.fillMaxWidth().margin(topBottom = 50.px).textAlign(TextAlign.Center)
-                .fontFamily(FONT_FAMILY).fontSize(16.px).fontWeight(FontWeight.Medium)
-                .cursor(Cursor.Pointer).visibility(
-                    if (showMoreVisibility) Visibility.Visible
-                    else Visibility.Hidden
-                ).onClick {
-                    onShowMore()
-                }, text = "Show More"
-        )
-
-
-    }
-
-
-}

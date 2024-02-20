@@ -11,4 +11,5 @@ object ApiPath
     const val selectedPost="selectedPost"
     const val updatePost="updatePost"
     const val readMainPosts="readMainPosts"
+    const val readLatestPosts="readLatestPosts"
 }

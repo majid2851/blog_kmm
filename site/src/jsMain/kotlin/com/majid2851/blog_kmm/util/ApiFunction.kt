@@ -149,6 +149,23 @@ suspend fun fetchMainPosts(
     }
 
 }
+suspend fun fetchLatestPosts(
+    skip:Int,
+    onSuccess:(ApiListResponse) ->Unit,
+    onError:(Exception) ->Unit,
+)
+{
+    try {
+        val result= window.api.tryGet(
+            apiPath = ApiPath.readLatestPosts+"?skip=$skip",
+        )?.decodeToString()
+        onSuccess(result.parseData())
+    }catch (e:Exception){
+        println(e)
+        onError(e)
+    }
+
+}
 
 suspend fun fetchMyPosts(
     skip:Int,

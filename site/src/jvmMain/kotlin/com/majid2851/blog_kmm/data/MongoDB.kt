@@ -154,5 +154,23 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
 
     }
 
+    override suspend fun readLatestPosts(skip: Int):
+            List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(
+                and(
+                    PostWithoutDetails::popular eq false,
+                    PostWithoutDetails::main eq false,
+                    PostWithoutDetails::sponsored eq false,
+                )
+            )
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(Constants.POST_PER_PAGE)
+            .toList()
+
+    }
+
 
 }
