@@ -835,6 +835,7 @@ private fun CustomInput(
             .noBorder()
             .fontFamily(FONT_FAMILY)
             .fontSize(16.px)
+            .padding(leftRight = 12.px)
             .toAttrs {
                 attr("placeholder", placeHolder)
                 attr("value",value)

@@ -49,7 +49,7 @@ fun HomePage()
     val latestPostsToSkip= remember { mutableStateOf(0) }
     val showMoreLatest= remember { mutableStateOf(false) }
     val showMorePopular= remember { mutableStateOf(false) }
-    val popularPostsToSkip= remember { mutableStateOf(false) }
+    val popularPostsToSkip= remember { mutableStateOf(0) }
 
 
     LaunchedEffect(Unit){
@@ -94,9 +94,15 @@ fun HomePage()
         )
 
         fetchPopularPosts(
-            skip = latestPostsToSkip.value,
+            skip = popularPostsToSkip.value,
             onSuccess = {
-
+                if(it is ApiListResponse.Success){
+                    popularPosts.addAll(it.data)
+                    popularPostsToSkip.value += Constants.POSTS_PER_PAGE
+                    if(it.data.size >=Constants.POSTS_PER_PAGE){
+                        showMorePopular.value=true
+                    }
+                }
             },
             onError = {
 
@@ -173,6 +179,40 @@ fun HomePage()
             breakpoint=breakpoint,
             posts = sponsoredPosts,
             onClick = {
+
+            }
+        )
+
+        PostSection(
+            breakpoint = breakpoint,
+            posts = popularPosts,
+            title = "Popular Posts",
+            showMoreVisibility = showMorePopular.value,
+            onShowMoreClick ={
+                scope.launch {
+                    fetchPopularPosts(
+                        skip = popularPostsToSkip.value,
+                        onSuccess = {response->
+                            if(response is ApiListResponse.Success){
+                                if(response.data.size < Constants.POSTS_PER_PAGE){
+                                    showMorePopular.value=false
+                                }
+                                popularPosts.addAll(response.data)
+                                popularPostsToSkip.value +=Constants.POSTS_PER_PAGE
+                            }else{
+                                showMorePopular.value=false
+                            }
+                        },
+                        onError = {
+                            println(it.message)
+                        },
+                    )
+                }
+
+
+
+            },
+            onClick={
 
             }
         )
