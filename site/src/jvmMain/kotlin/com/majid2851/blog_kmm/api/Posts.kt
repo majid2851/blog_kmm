@@ -188,6 +188,21 @@ suspend fun readLatestPosts(context: ApiContext)
 
 }
 
+@Api(routeOverride = ApiPath.readSponsoredPosts)
+suspend fun readSponsoredPosts(context: ApiContext)
+{
+    try {
+        val sponsoredPosts=context.data.getValue<MongoDB>().readSponsoredPosts()
+        context.res.setBody(ApiListResponse.Success(sponsoredPosts))
+
+    }catch (e:Exception){
+        context.res.setBody(ApiListResponse.Error(
+            message = e.message.toString()
+        ))
+    }
+
+}
+
 
 
 //TODO(I have to read about reified and inline )

@@ -172,5 +172,14 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
 
     }
 
+    override suspend fun readSponsoredPosts(): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::sponsored eq true)
+            .sort(descending(PostWithoutDetails::date))
+            .limit(2)
+            .toList()
+    }
+
 
 }

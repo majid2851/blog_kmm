@@ -12,4 +12,5 @@ object ApiPath
     const val updatePost="updatePost"
     const val readMainPosts="readMainPosts"
     const val readLatestPosts="readLatestPosts"
+    const val readSponsoredPosts="readSponsoredPosts"
 }
