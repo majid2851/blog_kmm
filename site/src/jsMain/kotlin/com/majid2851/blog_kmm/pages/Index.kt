@@ -11,6 +11,7 @@ import com.majid2851.blog_kmm.components.OverflowSidePanel
 import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.sections.HeaderSection
+import com.majid2851.blog_kmm.sections.MainSection
 import com.majid2851.blog_kmm.util.fetchMainPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -57,12 +58,18 @@ fun HomePage()
             )
         }
 
-
-
         HeaderSection(
             breakpoint = breakpoint,
             onMenuOpen = {
                 overflowOpened.value=true
+            }
+        )
+
+        MainSection(
+            breakpoint=breakpoint,
+            posts = mainPosts.value,
+            onClick = {
+
             }
         )
     }
