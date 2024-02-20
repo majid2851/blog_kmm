@@ -53,6 +53,7 @@ import com.varabyte.kobweb.silk.components.layout.SimpleGrid
 import com.varabyte.kobweb.silk.components.layout.numColumns
 import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
+import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.CSSSizeValue
 import org.jetbrains.compose.web.css.CSSUnit
 import org.jetbrains.compose.web.css.LineStyle
@@ -130,7 +131,11 @@ fun PostPreview(
             )
         }
     } else {
-        Row() {
+        Row(
+            modifier = Modifier
+                .onClick { onClick(post.id) }
+                .cursor(Cursor.Pointer)
+        ) {
             PostContent(
                 selectableMode = selectableMode,
                 checked = checked,

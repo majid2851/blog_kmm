@@ -52,6 +52,10 @@ enum class Theme(
     Red(
         hex="#FF0000",
         rgb=rgb(r=255,g=0,b=0)
+    ),
+    Sponsored(
+        hex="#3300FF",
+        rgb= rgb(r=51,g=0,b=255)
     )
 
 

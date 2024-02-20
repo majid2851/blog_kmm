@@ -16,6 +16,7 @@ import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.sections.HeaderSection
 import com.majid2851.blog_kmm.sections.MainSection
 import com.majid2851.blog_kmm.sections.PostSection
+import com.majid2851.blog_kmm.sections.SponsoredPostsSection
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.fetchLatestPosts
 import com.majid2851.blog_kmm.util.fetchMainPosts
@@ -150,6 +151,14 @@ fun HomePage()
 
             },
             onClick={
+
+            }
+        )
+
+        SponsoredPostsSection(
+            breakpoint=breakpoint,
+            posts = sponsoredPosts,
+            onClick = {
 
             }
         )

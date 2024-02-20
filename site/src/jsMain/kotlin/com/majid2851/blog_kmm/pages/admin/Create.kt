@@ -181,7 +181,8 @@ fun CreateScreen()
                     thumbnail = response.data.thumbnail,
                     main = response.data.main,
                     popular = response.data.popular,
-                    buttonText = "Update"
+                    buttonText = "Update",
+                    sponsor = response.data.sponsored,
                 )
                 println(response.data)
             }
