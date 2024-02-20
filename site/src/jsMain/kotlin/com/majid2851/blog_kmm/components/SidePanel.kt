@@ -149,7 +149,7 @@ private fun NavigationItem(
 }
 
 @Composable
-private fun NavigationItems()
+fun NavigationItems()
 {
     val context= rememberPageContext()
     SpanText(
@@ -273,7 +273,10 @@ fun CollapseSizePanel(
 }
 
 @Composable
-fun OverflowSidePanel(onMenuClose:()->Unit)
+fun OverflowSidePanel(
+    onMenuClose:()->Unit,
+    content: @Composable () -> Unit,
+)
 {
     val scope= rememberCoroutineScope()
     val breakPoint= rememberBreakpoint()
@@ -353,7 +356,7 @@ fun OverflowSidePanel(onMenuClose:()->Unit)
                 )
             }
 
-            NavigationItems()
+           content()
 
 
 

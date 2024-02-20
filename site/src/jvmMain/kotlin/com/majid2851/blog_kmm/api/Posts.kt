@@ -124,8 +124,6 @@ suspend fun updatePost(context: ApiContext)
         )
 
 
-
-
     }catch (e:Exception){
         context.res.setBody(e.message)
     }
@@ -157,6 +155,24 @@ suspend fun selectedPost(context: ApiContext)
     }
 
 }
+
+@Api(routeOverride = ApiPath.readMainPosts)
+suspend fun readMainPosts(context: ApiContext)
+{
+    try {
+        val mainPost=context.data.getValue<MongoDB>().readMainPosts()
+        context.res.setBody(ApiListResponse.Success(mainPost))
+
+    }catch (e:Exception){
+        context.res.setBody(ApiListResponse.Error(
+            message = e.message.toString()
+        ))
+    }
+
+}
+
+
+
 
 
 //TODO(I have to read about reified and inline )

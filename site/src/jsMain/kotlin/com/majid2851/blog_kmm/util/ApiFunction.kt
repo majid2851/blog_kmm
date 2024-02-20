@@ -133,6 +133,23 @@ suspend fun updatePost(post: Post):Boolean{
 
 }
 
+suspend fun fetchMainPosts(
+    onSuccess:(ApiListResponse) ->Unit,
+    onError:(Exception) ->Unit,
+)
+{
+    try {
+        val result= window.api.tryGet(
+            apiPath = ApiPath.readMainPosts,
+        )?.decodeToString()
+        onSuccess(result.parseData())
+    }catch (e:Exception){
+        println(e)
+        onError(e)
+    }
+
+}
+
 suspend fun fetchMyPosts(
     skip:Int,
     onSuccess:(ApiListResponse) ->Unit,

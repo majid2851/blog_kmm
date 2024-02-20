@@ -144,4 +144,15 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
             .wasAcknowledged()
     }
 
+    override suspend fun readMainPosts(): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::main eq true)
+            .sort(descending(PostWithoutDetails::date))
+            .limit(Constants.MAIN_POSTS_LIMIT)
+            .toList()
+
+    }
+
+
 }

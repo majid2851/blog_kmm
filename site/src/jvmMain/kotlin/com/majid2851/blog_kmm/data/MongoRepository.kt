@@ -26,4 +26,6 @@ interface MongoRepository
 
     suspend fun updatePost(post:Post):Boolean
 
+    suspend fun readMainPosts():List<PostWithoutDetails>
+
 }
