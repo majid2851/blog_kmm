@@ -26,10 +26,12 @@ interface MongoRepository
 
     suspend fun updatePost(post:Post):Boolean
 
-    suspend fun readMainPosts():List<PostWithoutDetails>
 
     suspend fun readLatestPosts(skip: Int):List<PostWithoutDetails>
 
+    suspend fun readMainPosts():List<PostWithoutDetails>
+
     suspend fun readSponsoredPosts():List<PostWithoutDetails>
 
+    suspend fun readPopularPosts(skip: Int):List<PostWithoutDetails>
 }

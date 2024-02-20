@@ -20,6 +20,7 @@ import com.majid2851.blog_kmm.sections.SponsoredPostsSection
 import com.majid2851.blog_kmm.util.Constants
 import com.majid2851.blog_kmm.util.fetchLatestPosts
 import com.majid2851.blog_kmm.util.fetchMainPosts
+import com.majid2851.blog_kmm.util.fetchPopularPosts
 import com.majid2851.blog_kmm.util.fetchSponsoredPosts
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
@@ -44,8 +45,11 @@ fun HomePage()
     val sponsoredPosts= remember {
         mutableStateListOf<PostWithoutDetails>()
     }
+    val popularPosts= remember { mutableStateListOf<PostWithoutDetails>() }
     val latestPostsToSkip= remember { mutableStateOf(0) }
     val showMoreLatest= remember { mutableStateOf(false) }
+    val showMorePopular= remember { mutableStateOf(false) }
+    val popularPostsToSkip= remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit){
@@ -86,6 +90,16 @@ fun HomePage()
             },
             onError = {
                 println(it)
+            }
+        )
+
+        fetchPopularPosts(
+            skip = latestPostsToSkip.value,
+            onSuccess = {
+
+            },
+            onError = {
+
             }
         )
     }

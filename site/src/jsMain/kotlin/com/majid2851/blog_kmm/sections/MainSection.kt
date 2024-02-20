@@ -73,7 +73,8 @@ fun MainPosts(
                 darkTheme = true,
                 onClick = {
 
-                }
+                },
+                titleColor = Theme.Sponsored.rgb
             )
             Column(
                 modifier = Modifier
@@ -85,12 +86,13 @@ fun MainPosts(
 //                        modifier = Modifier.margin(bottom = 20.px),
                         post = postWithoutDetails,
                         darkTheme = true,
-                        vertical = false ,
                         thumbnailHeight = 200.px,
+                        vertical = false,
 //                        titleMaxLines = 1,
                         onClick = {
 //                            onClick(postWithoutDetails._id)
-                        }
+                        },
+                        titleColor = Theme.Sponsored.rgb
                     )
                 }
             }
@@ -101,7 +103,8 @@ fun MainPosts(
                     darkTheme = true,
                     onClick = {
 //                        onClick(posts.first()._id)
-                    }
+                    },
+                    titleColor = Theme.Sponsored.rgb
                 )
             }
             Box(modifier = Modifier.margin(left = 10.px)) {
@@ -110,7 +113,8 @@ fun MainPosts(
                     darkTheme = true,
                     onClick = {
 //                        onClick(posts[1]._id)
-                    }
+                    },
+                    titleColor = Theme.Sponsored.rgb
                 )
             }
         } else {
@@ -120,7 +124,8 @@ fun MainPosts(
                 thumbnailHeight = 640.px,
                 onClick = {
 //                    onClick(posts.first()._id)
-                }
+                },
+                titleColor = Theme.Sponsored.rgb
             )
         }
     }

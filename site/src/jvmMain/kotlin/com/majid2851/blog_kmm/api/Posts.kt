@@ -200,6 +200,22 @@ suspend fun readSponsoredPosts(context: ApiContext)
             message = e.message.toString()
         ))
     }
+}
+
+@Api(routeOverride = ApiPath.readPopularPosts)
+suspend fun readPopularPosts(context: ApiContext)
+{
+    try {
+        val skip=context.req.params["skip"]?.toInt() ?: 0
+        val popularPosts=context.data.getValue<MongoDB>().
+            readPopularPosts(skip=skip)
+        context.res.setBody(ApiListResponse.Success(popularPosts))
+
+    }catch (e:Exception){
+        context.res.setBody(ApiListResponse.Error(
+            message = e.message.toString()
+        ))
+    }
 
 }
 

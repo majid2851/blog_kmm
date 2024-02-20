@@ -101,7 +101,7 @@ fun SponsoredPosts(
                     post = post,
                     vertical = breakpoint < Breakpoint.MD,
                     titleMaxLine = 1,
-//                    titleColor = Theme.Sponsored.rgb,
+                    titleColor = Theme.Sponsored.rgb,
                     thumbnailHeight = if (breakpoint >= Breakpoint.MD) 200.px else 300.px,
                     onClick = onClick
                 )

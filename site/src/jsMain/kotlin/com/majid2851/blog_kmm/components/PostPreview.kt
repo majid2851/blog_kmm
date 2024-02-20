@@ -14,10 +14,8 @@ import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
 import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.css.Overflow
-import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.css.TextOverflow
 import com.varabyte.kobweb.compose.css.TransitionProperty
-import com.varabyte.kobweb.compose.css.Visibility
 import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
@@ -39,19 +37,14 @@ import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.size
-import com.varabyte.kobweb.compose.ui.modifiers.textAlign
 import com.varabyte.kobweb.compose.ui.modifiers.textOverflow
 import com.varabyte.kobweb.compose.ui.modifiers.transition
-import com.varabyte.kobweb.compose.ui.modifiers.visibility
 import com.varabyte.kobweb.compose.ui.styleModifier
 import com.varabyte.kobweb.compose.ui.thenIf
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.layout.SimpleGrid
-import com.varabyte.kobweb.silk.components.layout.numColumns
-import com.varabyte.kobweb.silk.components.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -67,12 +60,13 @@ fun PostPreview(
     post: PostWithoutDetails,
     selectableMode: Boolean = false,
     darkTheme: Boolean = false,
-    thumbnailHeight:CSSSizeValue<CSSUnit.px> = 240.px,
-    titleMaxLine:Int=2,
+    thumbnailHeight: CSSSizeValue<CSSUnit.px> = 240.px,
+    titleMaxLine: Int = 2,
     vertical: Boolean = true,
     onSelect: (String) -> Unit = {},
     onDeselect: (String) -> Unit = {},
-    onClick:(String)->Unit
+    onClick: (String) -> Unit,
+    titleColor: CSSColorValue
 ) {
     val context = rememberPageContext()
     val checked = remember(selectableMode) { mutableStateOf(false) }
@@ -99,7 +93,7 @@ fun PostPreview(
                 .border(
                     width = if (selectableMode) 4.px else 0.px,
                     style = if (selectableMode) LineStyle.Solid else LineStyle.None,
-                    color = if (checked.value) Theme.Primary.rgb else Theme.LightGray.rgb
+                    color = if (checked.value) Theme.Primary.rgb else Theme.DarkGray.rgb
                 )
                 .onClick {
                     if (selectableMode) {
@@ -128,6 +122,7 @@ fun PostPreview(
                 vertical=vertical,
                 thumbnailHeight = thumbnailHeight,
                 titleMaxLine = titleMaxLine,
+                titleColor=titleColor
             )
         }
     } else {
@@ -145,8 +140,9 @@ fun PostPreview(
                 context=context,
                 darkTheme=darkTheme,
                 vertical=vertical,
+                titleMaxLine = titleMaxLine,
                 thumbnailHeight=thumbnailHeight,
-                titleMaxLine = titleMaxLine
+                titleColor = titleColor
             )
 
         }
@@ -164,9 +160,10 @@ private fun PostContent(
     onDeselect: (String) -> Unit,
     context: PageContext,
     darkTheme: Boolean,
-    vertical:Boolean,
+    vertical: Boolean,
     titleMaxLine: Int,
-    thumbnailHeight:CSSSizeValue<CSSUnit.px>
+    thumbnailHeight: CSSSizeValue<CSSUnit.px>,
+    titleColor: CSSColorValue
 ) {
     Image(
         modifier = Modifier
@@ -214,7 +211,7 @@ private fun PostContent(
 
         SpanText(
             modifier = Modifier.margin(bottom = 20.px).fontFamily(FONT_FAMILY).fontSize(20.px)
-                .fontWeight(FontWeight.Bold).color(if (darkTheme) Colors.White else Colors.Black)
+                .fontWeight(FontWeight.Bold).color(if (darkTheme) Colors.White else titleColor)
                 .textOverflow(TextOverflow.Ellipsis).overflow(Overflow.Hidden).styleModifier {
                     property("display", "-webkit-box")
                     property("-webkit-line-clamp", "$titleMaxLine")
@@ -239,11 +236,13 @@ private fun PostContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             CategoryChip(
-                category = post.category, darkTheme = darkTheme
+                category = post.category,
+                darkTheme = darkTheme,
             )
             if (selectableMode) {
                 CheckboxInput(
-                    checked = checked.value, attrs = Modifier.size(20.px).toAttrs()
+                    checked = checked.value,
+                    attrs = Modifier.size(20.px).toAttrs()
 
                 )
             }

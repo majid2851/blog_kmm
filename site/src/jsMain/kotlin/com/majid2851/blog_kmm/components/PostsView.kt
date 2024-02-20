@@ -2,6 +2,7 @@ package com.majid2851.blog_kmm.components
 
 import androidx.compose.runtime.Composable
 import com.majid2851.blog_kmm.models.PostWithoutDetails
+import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.util.Constants
 import com.varabyte.kobweb.compose.css.Cursor
 import com.varabyte.kobweb.compose.css.FontWeight
@@ -62,13 +63,15 @@ fun PostsView(
             numColumns = numColumns(base = 1, sm = 2, md = 3, lg = 4)
         ) {
             posts.forEach { post ->
-                PostPreview(post = post,
+                PostPreview(
+                    post = post,
                     selectableMode = selectableMode,
                     onSelect = { onSelect(post.id) },
                     onDeselect = { onDeselect(post.id) },
                     onClick = {
                         onClick(it)
-                    }
+                    },
+                    titleColor = Theme.Sponsored.rgb
                 )
             }
         }

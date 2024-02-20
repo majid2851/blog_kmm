@@ -144,15 +144,6 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
             .wasAcknowledged()
     }
 
-    override suspend fun readMainPosts(): List<PostWithoutDetails> {
-        return postCollection
-            .withDocumentClass(PostWithoutDetails::class.java)
-            .find(PostWithoutDetails::main eq true)
-            .sort(descending(PostWithoutDetails::date))
-            .limit(Constants.MAIN_POSTS_LIMIT)
-            .toList()
-
-    }
 
     override suspend fun readLatestPosts(skip: Int):
             List<PostWithoutDetails> {
@@ -172,12 +163,33 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
 
     }
 
+    override suspend fun readMainPosts(): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::main eq true)
+            .sort(descending(PostWithoutDetails::date))
+            .limit(Constants.MAIN_POSTS_LIMIT)
+            .toList()
+
+    }
     override suspend fun readSponsoredPosts(): List<PostWithoutDetails> {
         return postCollection
             .withDocumentClass(PostWithoutDetails::class.java)
             .find(PostWithoutDetails::sponsored eq true)
             .sort(descending(PostWithoutDetails::date))
             .limit(2)
+            .toList()
+    }
+
+
+    override suspend fun readPopularPosts(skip: Int):
+            List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::popular eq true,)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(Constants.POST_PER_PAGE)
             .toList()
     }
 

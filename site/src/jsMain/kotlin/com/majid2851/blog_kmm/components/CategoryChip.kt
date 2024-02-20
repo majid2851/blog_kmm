@@ -45,7 +45,7 @@ fun CategoryChip(
                 .color(
                     (if(darkTheme) Theme.values().find {
                         it.hex==category.color
-                    }?.rgb ?:Theme.HalfBlack.rgb else Theme.HalfBlack.rgb)
+                    }?.rgb ?:Theme.HalfBlack.rgb else Theme.DarkGray.rgb)
                 ),
             text = category.name
         )
