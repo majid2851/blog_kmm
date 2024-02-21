@@ -206,7 +206,7 @@ fun searchPage()
                     }
                 },
                 onClick = {
-//                    context.router.navigateTo(Screen.PostPage.getPost(id = it))
+                    context.router.navigateTo(Screen.PostPage.getPost(id = it))
                 },
             )
         } else {

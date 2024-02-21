@@ -2,6 +2,7 @@ package com.majid2851.blog_kmm.navigation
 
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.util.Constants
+import com.majid2851.blog_kmm.util.Constants.POST_ID_PARAM
 
 sealed class Screen(val route:String)
 {
@@ -27,6 +28,9 @@ sealed class Screen(val route:String)
                 "${Constants.CATEGORY_PARAM}=${category.name}"
         fun searchByTitle(query: String)
             ="/search/query?${Constants.QUERY_PARAM}=$query"
+    }
+    object PostPage:Screen(route = "/posts/post"){
+        fun getPost(id:String)="/posts/post?${POST_ID_PARAM}=$id"
     }
 
 

@@ -72,7 +72,7 @@ fun MainPosts(
                 post = posts.first(),
                 darkTheme = true,
                 onClick = {
-
+                    onClick(it)
                 },
                 titleColor = Theme.Sponsored.rgb
             )
@@ -90,7 +90,7 @@ fun MainPosts(
                         vertical = false,
 //                        titleMaxLines = 1,
                         onClick = {
-//                            onClick(postWithoutDetails._id)
+                            onClick(postWithoutDetails.id)
                         },
                         titleColor = Theme.Sponsored.rgb
                     )
@@ -102,7 +102,7 @@ fun MainPosts(
                     post = posts.first(),
                     darkTheme = true,
                     onClick = {
-//                        onClick(posts.first()._id)
+                        onClick(posts.first().id)
                     },
                     titleColor = Theme.Sponsored.rgb
                 )
@@ -112,7 +112,7 @@ fun MainPosts(
                     post = posts[1],
                     darkTheme = true,
                     onClick = {
-//                        onClick(posts[1]._id)
+                        onClick(posts[1].id)
                     },
                     titleColor = Theme.Sponsored.rgb
                 )
@@ -123,7 +123,7 @@ fun MainPosts(
                 darkTheme = true,
                 thumbnailHeight = 640.px,
                 onClick = {
-//                    onClick(posts.first()._id)
+                    onClick(posts.first().id)
                 },
                 titleColor = Theme.Sponsored.rgb
             )

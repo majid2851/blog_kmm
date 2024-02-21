@@ -14,6 +14,7 @@ import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
+import com.majid2851.blog_kmm.navigation.Screen
 import com.majid2851.blog_kmm.sections.HeaderSection
 import com.majid2851.blog_kmm.sections.MainSection
 import com.majid2851.blog_kmm.sections.NewsletterSection
@@ -32,13 +33,16 @@ import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
+import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 
 @Page
 @Composable
 fun HomePage()
 {
+    val context= rememberPageContext()
     val scope= rememberCoroutineScope()
     val breakpoint= rememberBreakpoint()
     val overflowOpened= remember { mutableStateOf(false) }
@@ -142,7 +146,7 @@ fun HomePage()
             breakpoint=breakpoint,
             posts = mainPosts.value,
             onClick = {
-
+                context.router.navigateTo(Screen.PostPage.getPost(id = it))
             }
         )
 
@@ -176,7 +180,7 @@ fun HomePage()
 
             },
             onClick={
-
+                context.router.navigateTo(Screen.PostPage.getPost(id = it))
             }
         )
 
@@ -184,7 +188,7 @@ fun HomePage()
             breakpoint=breakpoint,
             posts = sponsoredPosts,
             onClick = {
-
+                context.router.navigateTo(Screen.PostPage.getPost(id = it))
             }
         )
 
@@ -218,7 +222,7 @@ fun HomePage()
 
             },
             onClick={
-
+                context.router.navigateTo(Screen.PostPage.getPost(id = it))
             }
         )
 
