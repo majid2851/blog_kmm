@@ -1,5 +1,6 @@
 package com.majid2851.blog_kmm.navigation
 
+import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.util.Constants
 
 sealed class Screen(val route:String)
@@ -18,6 +19,10 @@ sealed class Screen(val route:String)
     object AdminLogout:Screen(route = "/admin/logout")
     object AdminSuccess:Screen(route = "/admin/success"){
         fun postUpdated() ="/admin/success?${Constants.UpdateParam}=true"
+    }
+    object SearchPage:Screen(route = "/search/query"){
+        fun searchByCategory(category: Category)="/search/query?" +
+                "${Constants.CATEGORY_PARAM}=${category.name}"
     }
 
 

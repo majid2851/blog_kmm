@@ -48,7 +48,7 @@ fun CategoryNavigationItems(
                 .fontWeight(FontWeight.Medium)
                 .textDecorationLine(TextDecorationLine.None)
                 .onClick {
-//                    context.router.navigateTo(Screen.SearchPage.searchByCategory(category))
+                    context.router.navigateTo(Screen.SearchPage.searchByCategory(category))
                  },
             path = "",
             text = category.name
