@@ -40,8 +40,12 @@ import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
 import org.jetbrains.compose.web.css.px
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import com.majid2851.blog_kmm.util.Constants.QUERY_PARAM
+import com.majid2851.blog_kmm.util.IdUtils
 import com.majid2851.blog_kmm.util.searchPostByTitle
+import kotlinx.browser.document
 import kotlinx.coroutines.launch
+import org.w3c.dom.HTMLInputElement
 
 @Page(routeOverride = "query")
 @Composable
@@ -67,17 +71,23 @@ fun searchPage()
     val value= remember(key1 = context.route) {
         if(hasCategoryParam){
             context.route.params.getValue(Constants.CATEGORY_PARAM)
+        } else if (hasQueryParam) {
+            context.route.params.getValue(QUERY_PARAM)
         }else{
             ""
         }
     }
 
-    LaunchedEffect(key1 = context.route){
-        if(hasCategoryParam){
+    LaunchedEffect(key1 = context.route) {
+        (document.getElementById(IdUtils.adminSearchBar) as HTMLInputElement).value = ""
+        showMorePosts = false
+        postsToSkip = 0
+        if (hasCategoryParam) {
             searchPostByCategory(
-                category =Category.valueOf(value = value),
+                category = runCatching { Category.valueOf(value) }
+                    .getOrElse { Category.Programming },
                 skip = postsToSkip,
-                onSuccess = {response->
+                onSuccess = { response ->
                     apiResponse = response
                     if (response is ApiListResponse.Success) {
                         searchedPosts.clear()
@@ -86,9 +96,23 @@ fun searchPage()
                         if (response.data.size >= POSTS_PER_PAGE) showMorePosts = true
                     }
                 },
-                onError = {
-
-                }
+                onError = {}
+            )
+        } else if (hasQueryParam) {
+            (document.getElementById(IdUtils.adminSearchBar) as HTMLInputElement).value = value
+            searchPostByTitle(
+                query = value,
+                skip = postsToSkip,
+                onSuccess = { response ->
+                    apiResponse = response
+                    if (response is ApiListResponse.Success) {
+                        searchedPosts.clear()
+                        searchedPosts.addAll(response.data)
+                        postsToSkip += POSTS_PER_PAGE
+                        if (response.data.size >= POSTS_PER_PAGE) showMorePosts = true
+                    }
+                },
+                onError = {}
             )
         }
     }
@@ -174,7 +198,9 @@ fun searchPage()
                                         }
                                     }
                                 },
-                                onError = {}
+                                onError = {
+                                    println(it)
+                                }
                             )
                         }
                     }

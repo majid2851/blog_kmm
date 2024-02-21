@@ -128,7 +128,7 @@ fun Header(
                     .width(if (breakpoint >= Breakpoint.SM) 100.px else 70.px)
                     .cursor(Cursor.Pointer)
                     .onClick {
-//                        context.router.navigateTo(Screen.HomePage.route)
+                        context.router.navigateTo(Screen.HomePage.route)
                      },
                 src = logo,
                 alt = "Logo Image"
@@ -143,9 +143,9 @@ fun Header(
             fullWidth = fullSearchBarOpened,
             darkTheme = true,
             onEnterClick = {
-//                val query = (document.getElementById(IdUtils.adminSearchBar)
-//                        as HTMLInputElement).value
-//                context.router.navigateTo(Screen.SearchPage.searchByTitle(query = query))
+                val query = (document.getElementById(IdUtils.adminSearchBar)
+                        as HTMLInputElement).value
+                context.router.navigateTo(Screen.SearchPage.searchByTitle(query = query))
             },
             onSearchIconClick = { fullSearchBarOpened = it }
         )

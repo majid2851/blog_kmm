@@ -20,9 +20,13 @@ sealed class Screen(val route:String)
     object AdminSuccess:Screen(route = "/admin/success"){
         fun postUpdated() ="/admin/success?${Constants.UpdateParam}=true"
     }
+    object HomePage:Screen(route = "/")
+
     object SearchPage:Screen(route = "/search/query"){
         fun searchByCategory(category: Category)="/search/query?" +
                 "${Constants.CATEGORY_PARAM}=${category.name}"
+        fun searchByTitle(query: String)
+            ="/search/query?${Constants.QUERY_PARAM}=$query"
     }
 
 
