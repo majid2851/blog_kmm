@@ -15,6 +15,7 @@ import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
+import com.majid2851.blog_kmm.sections.FooterSection
 import com.majid2851.blog_kmm.sections.HeaderSection
 import com.majid2851.blog_kmm.sections.MainSection
 import com.majid2851.blog_kmm.sections.NewsletterSection
@@ -229,5 +230,7 @@ fun HomePage()
         NewsletterSection(
             breakpoint=breakpoint,
         )
+
+        FooterSection()
     }
 }
