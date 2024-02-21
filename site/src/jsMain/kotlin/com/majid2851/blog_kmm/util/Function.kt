@@ -173,5 +173,8 @@ fun Long.parseDateString()= Date(this).toLocaleDateString()
     return if(posts.size==1) "1 Post Selected."
         else "${posts.size} Posts Selected."
 }
-
+fun validateEmail(email: String): Boolean {
+    val regex = "^[A-Za-z](.*)(@)(.+)(\\.)(.+)"
+    return regex.toRegex().matches(email)
+}
 

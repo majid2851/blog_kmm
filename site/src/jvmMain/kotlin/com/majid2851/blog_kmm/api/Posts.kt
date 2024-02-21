@@ -3,8 +3,10 @@ package com.majid2851.blog_kmm.api
 import com.majid2851.blog_kmm.data.MongoDB
 import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.ApiResponse
+import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.util.ApiPath
+import com.majid2851.blog_kmm.util.Constants
 import com.varabyte.kobweb.api.Api
 import com.varabyte.kobweb.api.ApiContext
 import com.varabyte.kobweb.api.data.getValue
@@ -87,7 +89,7 @@ suspend fun deleteSelectedPosts(context: ApiContext)
     }
 }
 
-@Api(routeOverride = ApiPath.searchPost)
+@Api(routeOverride = ApiPath.searchPostsByTitle)
 suspend fun searchPostsByTitle(context: ApiContext)
 {
     try {
@@ -96,6 +98,32 @@ suspend fun searchPostsByTitle(context: ApiContext)
         val request=context.data.getValue<MongoDB>()
             .searchPostByTitle(
                 query=query,
+                skip=skip
+            )
+        context.res.setBody(
+            ApiListResponse.Success(data = request)
+        )
+
+    }catch (e:Exception){
+        context.res.setBody(
+            ApiListResponse.Error(message = e.message.toString())
+        )
+
+    }
+
+}
+
+
+@Api(routeOverride = ApiPath.searchPostsByCategory)
+suspend fun searchPostsByCategory(context: ApiContext)
+{
+    try {
+        val category=Category.valueOf(context.req.params[Constants.CATEGORY_PARAM]?:
+            Category.Programming.name)
+        val skip=context.req.params["skip"]?.toInt() ?: 0
+        val request=context.data.getValue<MongoDB>()
+            .searchPostsByCategory(
+                category =category,
                 skip=skip
             )
         context.res.setBody(

@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import com.majid2851.blog_kmm.components.AdminPageLayout
 import com.majid2851.blog_kmm.components.LinkPopup
-import com.majid2851.blog_kmm.components.Popup
+import com.majid2851.blog_kmm.components.MessagePopup
 import com.majid2851.blog_kmm.models.ApiResponse
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.ControlStyle
@@ -98,9 +98,7 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Text
 import org.jetbrains.compose.web.dom.TextArea
 import org.jetbrains.compose.web.dom.Ul
-import org.khronos.webgl.Uint16Array
 import org.w3c.dom.HTMLTextAreaElement
-import org.w3c.dom.events.KeyboardEvent
 import kotlin.js.Date
 
 data class CreatePageUiEvent(
@@ -394,7 +392,7 @@ fun CreateScreen()
 
     if(uiState.value.messagePopupVisibility)
     {
-        Popup(
+        MessagePopup(
             message = uiState.value.popupMessage,
             onDialogDismiss = {
                 uiState.value=uiState.value.copy(messagePopupVisibility = false)

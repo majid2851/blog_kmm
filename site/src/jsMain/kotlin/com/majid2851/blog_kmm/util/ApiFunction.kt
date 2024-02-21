@@ -1,8 +1,9 @@
 package com.majid2851.blog_kmm.util
 
-import androidx.compose.runtime.clearCompositionErrors
 import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.ApiResponse
+import com.majid2851.blog_kmm.models.Category
+import com.majid2851.blog_kmm.models.NewsLetter
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.RandomJoke
 import com.majid2851.blog_kmm.models.User
@@ -13,11 +14,9 @@ import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import org.w3c.dom.get
 import org.w3c.dom.set
 import kotlin.js.Date
-import kotlin.reflect.typeOf
 
 suspend fun checkUserExistence(user:User)
     :UserWithoutPassword?
@@ -167,6 +166,15 @@ suspend fun fetchLatestPosts(
 
 }
 
+suspend fun subscribeToNewsletter(newsLetter: NewsLetter):String
+{
+    return window.api.tryPost(
+        apiPath = ApiPath.subscribe,
+        body = Json.encodeToString(newsLetter)
+            .encodeToByteArray()
+    )?.decodeToString().toString().replace("\"","")
+}
+
 suspend fun fetchPopularPosts(
     skip:Int,
     onSuccess:(ApiListResponse) ->Unit,
@@ -250,13 +258,32 @@ suspend fun searchPostByTitle(
 ){
     try {
         val result=window.api.tryGet(
-            apiPath = ApiPath.searchPost+"?query=$query&skip=$skip",
+            apiPath = ApiPath.searchPostsByTitle+"?query=$query&skip=$skip",
         )?.decodeToString()
         onSuccess(result.parseData())
     }catch (e:Exception) {
         onError(e)
     }
 }
+
+
+suspend fun searchPostByCategory(
+    category:Category,
+    skip: Int,
+    onSuccess: (ApiListResponse) -> Unit,
+    onError: (Exception) -> Unit,
+){
+    try {
+        val result=window.api.tryGet(
+            apiPath = ApiPath.searchPostsByCategory+"?${Constants.CATEGORY_PARAM}=${category.name}&skip=$skip",
+        )?.decodeToString()
+        onSuccess(result.parseData())
+    }catch (e:Exception) {
+        println(e.toString())
+        onError(e)
+    }
+}
+
 
 suspend fun fetchSelectedPost(id: String):ApiResponse
 {

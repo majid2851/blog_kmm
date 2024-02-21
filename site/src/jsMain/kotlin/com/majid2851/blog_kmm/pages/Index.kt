@@ -13,8 +13,10 @@ import com.majid2851.blog_kmm.models.ApiListResponse
 import com.majid2851.blog_kmm.models.Category
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.PostWithoutDetails
+import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.sections.HeaderSection
 import com.majid2851.blog_kmm.sections.MainSection
+import com.majid2851.blog_kmm.sections.NewsletterSection
 import com.majid2851.blog_kmm.sections.PostSection
 import com.majid2851.blog_kmm.sections.SponsoredPostsSection
 import com.majid2851.blog_kmm.util.Constants
@@ -26,6 +28,8 @@ import com.varabyte.kobweb.compose.foundation.layout.Arrangement
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.ui.Alignment
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
+import com.varabyte.kobweb.compose.ui.modifiers.color
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxSize
 import com.varabyte.kobweb.core.Page
 import com.varabyte.kobweb.silk.theme.breakpoint.rememberBreakpoint
@@ -111,9 +115,10 @@ fun HomePage()
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .backgroundColor(Theme.HalfWhite.rgb),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if(overflowOpened.value){
             OverflowSidePanel(
@@ -215,6 +220,10 @@ fun HomePage()
             onClick={
 
             }
+        )
+
+        NewsletterSection(
+            breakpoint=breakpoint,
         )
     }
 }

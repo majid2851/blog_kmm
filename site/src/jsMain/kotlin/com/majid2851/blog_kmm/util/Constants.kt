@@ -11,6 +11,7 @@ object Constants {
     const val QUERY_PARAM="query"
     const val POST_ID_PARAM="postId"
     const val UpdateParam="update"
+    const val CATEGORY_PARAM="category"
 
 }
 
@@ -67,5 +68,6 @@ object IdUtils{
     const val editorPreview="editorPreview"
     const val linkHrefInput="thumbnailInput"
     const val linkTitleInput="thumbnailInput"
+    const val emailInput="emailInput"
 
 }

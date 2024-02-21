@@ -1,5 +1,7 @@
 package com.majid2851.blog_kmm.data
 
+import com.majid2851.blog_kmm.models.Category
+import com.majid2851.blog_kmm.models.NewsLetter
 import com.majid2851.blog_kmm.models.Post
 import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.User
@@ -41,6 +43,7 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
     private val database=client.getDatabase(DATABASE_NAME)
     private val userCollection=database.getCollection<User>()
     private val postCollection=database.getCollection<Post>()
+    private val newsLetterCollection=database.getCollection<NewsLetter>()
 
 
     override suspend fun addPost(post: Post): Boolean {
@@ -191,6 +194,41 @@ class MongoDB(private val context: InitApiContext) : MongoRepository
             .skip(skip)
             .limit(Constants.POST_PER_PAGE)
             .toList()
+    }
+
+    override suspend fun subscribe(newsLetter: NewsLetter): String
+    {
+        val result=newsLetterCollection
+            .find(NewsLetter::email eq newsLetter.email)
+            .toString()
+        return if(result.isNotEmpty()){
+            "You're already subscribed."
+        }else{
+            val newEmail=newsLetterCollection
+                .insertOne(newsLetter)
+                .awaitFirst()
+                .wasAcknowledged()
+            if(newEmail) "Successfully Subscribed."
+                else "Something went wrong.Please try again later."
+
+        }
+
+
+    }
+
+    override suspend fun searchPostsByCategory(
+        category: Category,
+        skip: Int
+    ): List<PostWithoutDetails> {
+        return postCollection
+            .withDocumentClass(PostWithoutDetails::class.java)
+            .find(PostWithoutDetails::category eq category)
+            .sort(descending(PostWithoutDetails::date))
+            .skip(skip)
+            .limit(Constants.POST_PER_PAGE)
+            .toList()
+
+
     }
 
 

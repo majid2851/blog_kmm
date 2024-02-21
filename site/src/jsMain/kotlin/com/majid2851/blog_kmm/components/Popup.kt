@@ -41,7 +41,7 @@ import org.jetbrains.compose.web.dom.Input
 import org.w3c.dom.HTMLInputElement
 
 @Composable
-fun Popup(
+fun MessagePopup(
     message: String,
     onDialogDismiss: () -> Unit
 ) {
