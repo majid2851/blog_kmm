@@ -13,6 +13,10 @@ espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.8.2"
 compose-bom = "2024.02.00"
+navigation="2.7.7"
+coroutines="1.7.3"
+mongodb="1.7.1"
+coil="2.3.0"
 
 [libraries]
 kobweb-api = { module = "com.varabyte.kobweb:kobweb-api", version.ref = "kobweb" }
@@ -39,6 +43,11 @@ ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
+navigation-compose={ module="androidx.navigation:navigation-compose",version.ref="navigation"}
+kotlinx-coroutines={ module="org.jetbrains.kotlinx:kotlinx-coroutines-core",version.ref="coroutines"}
+mongodb-sync={ module="io.realm.kotlin:library-sync",version.ref="mongodb"}
+coil-compose={module="io.coil-kt:coil-compose",version.ref="coil"}
+
 
 
 
@@ -54,4 +63,5 @@ serialization-plugin = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 com-android-application = { id = "com.android.application", version.ref = "agp" }
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin190" }
+mongodb-realm = { id = "io.realm.kotlin", version.ref = "mongodb" }
 
