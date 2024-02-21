@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.example.blogmultiplatform.styles.MainPostPreviewStyle
+import com.example.blogmultiplatform.styles.PostPreviewStyle
 import com.majid2851.blog_kmm.models.PostWithoutDetails
 import com.majid2851.blog_kmm.models.Theme
 import com.majid2851.blog_kmm.navigation.Screen
@@ -45,6 +47,7 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.core.PageContext
 import com.varabyte.kobweb.core.rememberPageContext
 import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.style.toModifier
 import com.varabyte.kobweb.silk.components.text.SpanText
 import org.jetbrains.compose.web.css.CSSColorValue
 import org.jetbrains.compose.web.css.CSSSizeValue
@@ -57,6 +60,7 @@ import org.jetbrains.compose.web.dom.CheckboxInput
 
 @Composable
 fun PostPreview(
+    modifier:Modifier=Modifier,
     post: PostWithoutDetails,
     selectableMode: Boolean = false,
     darkTheme: Boolean = false,
@@ -73,15 +77,15 @@ fun PostPreview(
     if (vertical) {
         Column(
             modifier = Modifier
-//                .thenIf(
-//                    condition = post.main,
-//                    other = MainPostPreviewStyle.toModifier()
-//                )
-//                .thenIf(
-//                    condition = !post.main,
-//                    other = PostPreviewStyle.toModifier()
-//                )
-//                .then(modifier)
+                .thenIf(
+                    condition = post.main,
+                    other = MainPostPreviewStyle.toModifier()
+                )
+                .thenIf(
+                    condition = !post.main,
+                    other = PostPreviewStyle.toModifier()
+                )
+                .then(modifier)
                 .fillMaxWidth(
                     if (darkTheme) 100.percent
                     else if (titleColor == Theme.Sponsored.rgb) 100.percent
@@ -127,7 +131,8 @@ fun PostPreview(
         }
     } else {
         Row(
-            modifier = Modifier
+            modifier = PostPreviewStyle.toModifier()
+                .then(modifier)
                 .onClick { onClick(post.id) }
                 .cursor(Cursor.Pointer)
         ) {
