@@ -70,7 +70,7 @@ dependencies {
     implementation(libs.mongodb.sync)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization)
-//    implementation(project(":shared"))
+    implementation(project(":site"))
 
 
     testImplementation(libs.junit)
